@@ -39,7 +39,7 @@ npm run reset-project
 
 ## View the design of the project
 
-= [Figma Design](https://www.figma.com/design/bzvfEHdMxROC52XllYWdpb/Yakkaw-Mobile-Application-Figma?node-id=0-1&t=VdiDb9LQvV52zKKk-1)
+- [Figma Design](https://www.figma.com/design/bzvfEHdMxROC52XllYWdpb/Yakkaw-Mobile-Application-Figma?node-id=0-1&t=VdiDb9LQvV52zKKk-1)
 
 
 ## Join the community
