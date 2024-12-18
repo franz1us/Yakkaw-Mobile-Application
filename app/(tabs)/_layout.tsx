@@ -1,12 +1,11 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
-
-import { HapticTab } from '@/components/HapticTab';
+import { Platform, useColorScheme } from 'react-native';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { HapticTab } from '@/components/HapticTab';
+import HeaderTitle from '@/components/HeaderTitle';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -15,29 +14,54 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
+        headerStyle: {
+          backgroundColor: Colors[colorScheme ?? 'light'].background, // Adjust header background
+        },
+        headerTitleStyle: {
+          fontSize: 18,
+          fontWeight: 'bold',
+          color: Colors[colorScheme ?? 'light'].text, // Adjust header title color
+        },
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
+            position: 'absolute', // Keep bottom bar position intact
           },
           default: {},
         }),
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="Home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          headerTitle: () => <HeaderTitle title="Home" />, // Custom header title
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="Maps"
         options={{
-          title: 'Explore',
+          title: 'Maps',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          headerTitle: () => <HeaderTitle title="Maps" />, // Custom header title
+        }}
+      />
+      <Tabs.Screen
+        name="Ranking"
+        options={{
+          title: 'Ranking',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="ranking.star" color={color} />,
+          headerTitle: () => <HeaderTitle title="Ranking" />, // Custom header title
+        }}
+      />
+      <Tabs.Screen
+        name="Statistic"
+        options={{
+          title: 'Statistic',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="statistic.chart" color={color} />,
+          headerTitle: () => <HeaderTitle title="Statistic" />, // Custom header title
         }}
       />
     </Tabs>
