@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform, useColorScheme } from 'react-native';
+import { Platform, useColorScheme, View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
@@ -37,7 +37,21 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-          headerTitle: () => <HeaderTitle title="Home" />, // Custom header title
+          headerTitle: () => (
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>Yakkaw</Text>
+            </View>
+          ),
+          headerRight: () => (
+            <View style={styles.headerIcons}>
+              <TouchableOpacity>
+                <Image source={require('@/assets/images/Notification.png')} style={styles.icon} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image source={require('@/assets/images/Settings.png')} style={styles.icon} />
+              </TouchableOpacity>
+            </View>
+          ),
         }}
       />
       <Tabs.Screen
@@ -67,3 +81,25 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.light.text, // Adjust to match the theme
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    marginRight: 16, // Adds spacing between icons and screen edge
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginHorizontal: 8,
+  },
+});
