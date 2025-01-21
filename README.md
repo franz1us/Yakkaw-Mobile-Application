@@ -8,7 +8,15 @@
    npm install
    ```
 
+   ```bash
+   yarn install
+   ```
+
 2. Start the app
+
+   ```bash
+    npm start --reset-cache
+   ```
 
    ```bash
     npm run android
