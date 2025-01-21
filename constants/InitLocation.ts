@@ -13,4 +13,5 @@ export const InitLocation = [
     { id: "9", name: "Chiang Saen", pm25: 53, favorite: false },
     { id: "10", name: "Doi Luang", pm25: 35, favorite: false },
   ];
-  
+
+export { TypeLocation };
