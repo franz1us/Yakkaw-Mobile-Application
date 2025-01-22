@@ -5,11 +5,11 @@
 1. Install dependencies
 
    ```bash
-    yarn install
+   npm install
    ```
 
    ```bash
-   npm install
+   yarn install
    ```
 
 2. Start the app
@@ -17,6 +17,7 @@
    ```bash
     npm start --reset-cache
    ```
+
 
 In the output, you'll find options to open the app in a
 
