@@ -5,10 +5,6 @@
 1. Install dependencies
 
    ```bash
-    yarn install
-   ```
-
-   ```bash
    npm install
    ```
 
@@ -20,18 +16,8 @@
 
    ```bash
     npm start --reset-cache
-<<<<<<< HEAD
    ```
 
-   ```bash
-    npm run android
-   ```
-
-   ```bash
-    npm run ios
-=======
->>>>>>> 37dd23b9a6c8deb681f1f38c3737107430fd1d2d
-   ```
 
 In the output, you'll find options to open the app in a
 
