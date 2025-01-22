@@ -99,12 +99,45 @@ const Maps = () => {
       }
     >
       <Callout>
-        <View style={styles.callout}>
-          <Text style={styles.calloutTitle}>{marker.title}</Text>
-          <Text style={styles.calloutText}>{marker.description}</Text>
-          <Text style={styles.calloutText}>PM2.5 Level: {marker.pm25}</Text>
-        </View>
-      </Callout>
+  <View style={styles.customCallout}>
+    {/* PM2.5 Circle */}
+    <View
+      style={[
+        styles.pmCircle,
+        {
+          backgroundColor:
+            marker.pm25 <= 50
+              ? "green"
+              : marker.pm25 <= 100
+              ? "yellow"
+              : marker.pm25 <= 150
+              ? "orange"
+              : "red",
+        },
+      ]}
+    >
+      <Text style={styles.pmValue}>{marker.pm25}</Text>
+    </View>
+
+    {/* Information Section */}
+    <View style={styles.infoContainer}>
+      <Text style={styles.title}>{marker.title}</Text>
+      <Text style={styles.subtitle}>21/11/2024 - 11.00 AM</Text>
+      <Text style={styles.description}>
+        Quality of PM 2.5 is{" "}
+        {marker.pm25 <= 50
+          ? "Good"
+          : marker.pm25 <= 100
+          ? "Moderate"
+          : marker.pm25 <= 150
+          ? "Unhealthy"
+          : "Pretty Bad"}
+      </Text>
+    </View>
+  </View>
+</Callout>
+
+
     </Marker>
   ))}
 </MapView>
@@ -253,5 +286,46 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
   },
+  customCallout: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "white",
+    borderColor: "white",
+    borderWidth: 1,
+    width: 250,
+  },
+  pmCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  pmValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+  },
+  infoContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  subtitle: {
+    fontSize: 12,
+    color: "gray",
+    marginBottom: 5,
+  },
+  description: {
+    fontSize: 14,
+    color: "#333",
+  },
+  
   
 });
