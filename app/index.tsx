@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, Button } from 'react-native';
+import { Image, StyleSheet, Platform, Button, Text, View, TouchableOpacity } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -9,41 +9,74 @@ import { router } from 'expo-router';
 export default function HomeScreen() {
   const route = router;
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
+    <View style={styles.container}>
+      <View style={styles.image_text}>
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+        source={require('@/assets/images/yakkaw_icon.png')} 
+        style={styles.image}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
+        <Text style={styles.text}>Y A K K A W</Text>
+      </View>
 
-      <ThemedView>
-        <Button title='Get Start' onPress={()=>{route.push('/Start')}}/>
-      </ThemedView>
-    </ParallaxScrollView>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => route.push('/Start')}>
+          <Text style={styles.buttonText}>Get Started</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    padding: 16,
+    backgroundColor: '#F9FAFB', 
+  },
+  image_text:{
+    flex:1,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    padding:0,
+    margin:0,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  image: {
+    width: 300,
+    resizeMode: 'contain',
+    marginBottom: 0,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  text: {
+    fontSize: 18,
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 0,
+    fontWeight:'bold',
+  },
+  buttonContainer: {
     position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+    alignItems: 'center', 
+
+  },
+  button: {
+    backgroundColor: '#007BFF', // Primary color
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8, // Slightly rounded corners for the button
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 5, // For Android shadow
+  },
+  buttonText: {
+    fontSize: 16,
+    color: '#fff', // White text for contrast
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
