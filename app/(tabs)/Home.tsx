@@ -1,51 +1,139 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import { ThemedView } from '@/components/ThemedView';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const Home = () => {
+  const airQualityData = {
+    location: 'Bunyawat Wittayalai School',
+    address: 'Rob Wiang Sub-district, Mueang District, Chiang Rai',
+    temperature: '30°C',
+    currentAqi: '35',
+    oneHourAqi: '33',
+    threeHourAqi: '32',
+    aqiRating: 'good', // Assuming 34 is in the 'good' range
+  };
+
+  const getAqiColor = (aqi) => {
+    // Define color mapping based on AQI values
+    if (aqi <= 50) {
+      return '#2EA8FF';
+    } else if (aqi <= 100) {
+      return '#51D911';
+    } else if (aqi <= 150) {
+      return '#F0F000';
+    } else if (aqi <= 200) {
+      return '#FFA500';
+    } else {
+      return '#FF2C2C';
+    }
+  };
+
+  const getAqiRating = (aqi) => {
+    // Define text labels based on AQI values
+    if (aqi <= 50) {
+      return 'Good';
+    } else if (aqi <= 100) {
+      return 'Moderate';
+    } else if (aqi <= 150) {
+      return 'Unhealthy for Sensitive Groups';
+    } else if (aqi <= 200) {
+      return 'Unhealthy';
+    } else {
+      return 'Very Unhealthy';
+    }
+  };
+
+  const getStarRating = (aqi) => {
+    // Define Star Rating based on AQI values
+    if (aqi <= 50) {
+      return 5;
+    } else if (aqi <= 100) {
+      return 4;
+    } else if (aqi <= 150) {
+      return 3;
+    } else if (aqi <= 200) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
+  const renderStars = () => {
+    const starCount = getStarRating(airQualityData.currentAqi); // Adjust based on your rating logic
+    const stars = [];
+    for (let i = 0; i < starCount; i++) {
+      stars.push(<AntDesign name="star" size={16} color={getAqiColor(airQualityData.currentAqi)} key={i} />);
+    }
+    return stars;
+  };
+
   return (
     <ThemedView style={styles.container}>
       {/* Main AQI Section */}
-      <View style={styles.aqiContainer}>
-        <Text style={styles.locationText}>Chiang Rai</Text>
-        <Text style={styles.aqiText}>6-hour average</Text>
-        <Text style={styles.aqiValue}>27.25 µg/m³</Text>
-        <View style={styles.aqiLevels}>
-          {['#1E90FF', '#32CD32', '#FFFF00', '#FFA500', '#FF0000'].map((color, index) => (
-            <View key={index} style={[styles.levelBox, { backgroundColor: color }]} />
-          ))}
+      <View style={styles.aqiSetContainer}>
+        <View style={styles.aqiContainer}>
+          <Text style={styles.locationText}>Chiang Rai</Text>
+          <Text style={styles.aqiText}>6-hour average</Text>
+          <Text style={styles.aqiValue}>27.25</Text>
+          <Text style={styles.aqiWValue}>µg/m³</Text>
         </View>
       </View>
-
-      {/* Nearby Stations Section */}
-      <View style={styles.stationCard}>
-        <View style={styles.stationHeader}>
-          <Text style={styles.stationTemp}>30°C</Text>
-          <Text style={styles.stationAqi}>34 µg/m³</Text>
-        </View>
-        <Text style={styles.stationName}>Bunyawat Wittayalai School</Text>
-        <Text style={styles.stationAddress}>
-          Rob Wiang Sub-district, Mueang District, Chiang Rai
-        </Text>
-        <View style={styles.stationAqiDetails}>
-          {['33', '32', '33'].map((val, index) => (
-            <Text key={index} style={styles.aqiValueSmall}>{val}</Text>
+      
+      {/* AQI Levels */}
+      <View style={styles.aqiLevels}>
+          {[
+            { color: '#1E90FF', value: '2' },
+            { color: '#32CD32', value: '2' },
+            { color: '#FFFF00', value: '0' },
+            { color: '#FFA500', value: '0' },
+            { color: '#FF0000', value: '0' },
+          ].map((item, index) => (
+            <View key={index} style={[styles.levelBox, { backgroundColor: item.color }]}>
+              <Text style={styles.levelText}>{item.value}</Text>
+            </View>
           ))}
-        </View>
-        <Text style={styles.stationUpdate}>
-          Data as of 2024-10-09, Time 12:56
-        </Text>
       </View>
-
-      {/* Recommendations Section */}
-      <View style={styles.recommendationContainer}>
-        <Text style={styles.recommendationHeader}>Recommendations</Text>
-        <Text style={styles.generalRecommendation}>
-          <Text style={styles.boldText}>(General Public)</Text> You can carry on activities as usual.
-        </Text>
-        <Text style={styles.sensitiveRecommendation}>
-          <Text style={styles.boldText}>(Sensitive Groups)</Text> Limit outdoor activities or physical exertion. Be aware of dust exposure.
-        </Text>
+      <View style={styles.nbContain}>
+        <Text style={styles.headerText}>Nearby stations</Text>
+        <View style={styles.insContain}>
+        <View style={styles.stationCard}>
+            <View style={styles.lsContain}>
+              <View style={styles.stationAQI}>
+                <Text style={[styles.stationAQIValue, { color: getAqiColor(airQualityData.currentAqi) }]}>{airQualityData.currentAqi}</Text>
+                <Text style={[styles.stationAQIUnit, { color: getAqiColor(airQualityData.currentAqi) }]}>µg/m³</Text>
+              </View>
+            </View>
+            <View style={styles.stationCardContent}>
+              <View style={styles.stationHeaderContent}>
+                <Text style={styles.stationName}>{airQualityData.location}</Text>
+                <Text style={styles.stationAddress}>{airQualityData.address}</Text>
+              </View>
+              <View style={styles.stationHistory}>
+                <View style={styles.stationHistoryContain}>
+                  <Text style={[styles.stationHistoryValue, { color: getAqiColor(airQualityData.currentAqi) }]}>{airQualityData.currentAqi}</Text>
+                  <Text style={styles.stationHistoryLabel}>Current</Text>
+                </View>
+                <View style={styles.stationHistoryContain}>
+                  <Text style={[styles.stationHistoryValue, { color: getAqiColor(airQualityData.currentAqi) }]}>{airQualityData.oneHourAqi}</Text>
+                  <Text style={styles.stationHistoryLabel}>1 hours</Text>
+                </View>
+                <View style={styles.stationHistoryContain}>
+                  <Text style={[styles.stationHistoryValue, { color: getAqiColor(airQualityData.currentAqi) }]}>{airQualityData.threeHourAqi}</Text>
+                  <Text style={styles.stationHistoryLabel}>3 hours</Text>
+                </View>
+              </View>
+              <View style={styles.stationRating}>
+                {renderStars()}
+              </View>
+              <View style={styles.setnbText}>
+                <Text style={styles.stationMDataTime}>Data as of </Text>
+                <Text style={styles.stationDataTime}>2024-10-09, </Text>
+                <Text style={styles.stationMDataTime}>Time </Text>
+                <Text style={styles.stationDataTime}>12:56</Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </View>
     </ThemedView>
   );
@@ -56,129 +144,167 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: '#FFFFFF',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  aqiSetContainer: {
+    marginTop: 15,
     alignItems: 'center',
-    marginVertical: 16,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  headerIcons: {
-    flexDirection: 'row',
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    marginHorizontal: 8,
+    justifyContent: 'center',
   },
   aqiContainer: {
     alignItems: 'center',
-    marginVertical: 24,
-    backgroundColor: '#EAF8E6',
-    padding: 16,
-    borderRadius: 16,
+    justifyContent: 'center',
+    width: 200, // Set the circle's width
+    height: 200, // Set the circle's height
+    borderRadius: 100, // Make it circular
+    backgroundColor: '#46DA01', // Green background
+    borderWidth: 8, // Create the outer border effect
+    borderColor: 'rgba(70, 218, 1, 0.6)', // Light green for border
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 0, // Add depth with shadow
   },
   locationText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#FFFFFF', // White text
+    textAlign: 'center',
   },
   aqiText: {
     fontSize: 16,
-    color: '#666',
-    marginVertical: 8,
+    color: '#FFFFFF', // White text
+    marginVertical: 4,
+    textAlign: 'center',
   },
   aqiValue: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#FFFFFF', // White text
+    textAlign: 'center',
+  },
+  aqiWValue: {
+    fontSize: 16,
+    color: '#FFFFFF', // White text
+    textAlign: 'center',
   },
   aqiLevels: {
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'row',
-    marginTop: 12,
+    marginTop: 30, // Space between circle and levels
   },
   levelBox: {
-    width: 24,
-    height: 24,
+    width: 55,
+    height: 40,
     marginHorizontal: 4,
-    borderRadius: 4,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  stationCard: {
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  stationHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  stationTemp: {
-    fontSize: 20,
-    color: '#666',
-  },
-  stationAqi: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#4CAF50',
-  },
-  stationName: {
+  levelText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
-    marginVertical: 4,
+    color: '#FFFFFF',
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000',
+  },
+  nbContain: {
+    marginHorizontal: 20,
+    marginTop: 20,
+  },
+  insContain: {
+    marginTop: 10,
+  },
+  stationCard: {
+    backgroundColor: 'rgba(211, 211, 211, 0.2)',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+  stationCardContent: {
+    // ... styling for station card content ...
+  },
+  stationHeaderContent: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
+  stationName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
   },
   stationAddress: {
     fontSize: 14,
-    color: '#777',
+    color: '#888888',
     marginBottom: 8,
   },
-  stationAqiDetails: {
+  stationAQI: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 4,
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    width: 90,
+    borderRadius: 15,
+    borderColor: '#000000',
+    padding: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 0.2, // Add depth with shadow
   },
-  aqiValueSmall: {
-    fontSize: 14,
-    color: '#4CAF50',
+  stationAQIValue: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginRight: 4,
   },
-  stationUpdate: {
-    fontSize: 12,
-    color: '#999',
-    textAlign: 'right',
+  stationAQIUnit: {
+    fontSize: 16,
+  },
+  stationHistory: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
     marginTop: 8,
   },
-  recommendationContainer: {
-    backgroundColor: '#FFF9E6',
-    padding: 16,
-    borderRadius: 12,
+  stationHistoryContain: {
+    alignContent: 'center',
+    alignItems: 'center',
   },
-  recommendationHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  generalRecommendation: {
+  stationHistoryLabel: {
     fontSize: 14,
-    color: '#333',
-    marginBottom: 4,
+    color: '#111111',
+    marginRight: 10
   },
-  sensitiveRecommendation: {
-    fontSize: 14,
-    color: '#333',
+  stationHistoryValue: {
+    fontSize: 16,
+    fontWeight: 'bold', 
+    marginRight: 10
   },
-  boldText: {
-    fontWeight: 'bold',
+  stationRating: {
+    // ... styling for star rating ...
+    flexDirection: "row",
+    marginTop: 10
+  },
+  stationDataTime: {
+    fontSize: 10,
+    color: '#888888',
+    marginTop: 8,
+  },
+  stationMDataTime: {
+    fontSize: 10,
+    color: '#2196F3',
+    marginTop: 8,
+  },
+  setnbText: {
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+  },
+  lsContain: {
   },
 });
