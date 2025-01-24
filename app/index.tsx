@@ -20,7 +20,7 @@ export default function HomeScreen() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => route.push('/Start')}>
-          <Text style={styles.buttonText}>Get Started</Text>
+          <Text style={styles.buttonText}>Yakkaw Start</Text>
         </TouchableOpacity>
       </View>
     </View>
