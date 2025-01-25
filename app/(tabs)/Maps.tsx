@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
 import {
   StyleSheet,
   View,
@@ -6,10 +7,13 @@ import {
   TouchableOpacity,
   Text,
   Alert,
+  TextInput,
 } from "react-native";
 import MapView, { Callout, Marker, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import Icon from "react-native-vector-icons/MaterialIcons";
+
+const API_URL = "https://your-api-endpoint.com/";
 
 const Maps = () => {
   const [mapType, setMapType] = useState<"standard" | "satellite" | "hybrid">(
@@ -23,23 +27,7 @@ const Maps = () => {
     longitudeDelta: 4.0,
   });
 
-  const [markers, setMarkers] = useState([
-    {
-      id: 1,
-      title: "Bangkok",
-      description: "PM2.5: 72 µg/m³",
-      coordinate: { latitude: 13.7563, longitude: 100.5018 },
-      pm25: 72,
-    },
-    {
-      id: 2,
-      title: "Chiang Mai",
-      description: "PM2.5: 180 µg/m³",
-      coordinate: { latitude: 18.7903, longitude: 98.986 },
-      pm25: 180,
-    },
-    // Other markers...
-  ]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const toggleMenu = () => {
     setShowMenu((prev) => !prev);
@@ -49,6 +37,69 @@ const Maps = () => {
     setMapType(type);
     setShowMenu(false);
   };
+
+  const [markers, setMarkers] = useState([]);
+  useEffect(() => {
+    const fetchMarkers = async () => {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        if (data.status === 200 && data.response) {
+          const today = format(new Date(), "yyyy-MM-dd"); // วันที่ปัจจุบันในรูปแบบ yyyy-MM-dd
+
+          const filteredMarkers = data.response
+            .filter((item) => {
+              const itemDate = item.ddate ? item.ddate : null;
+
+              return (
+                item.status === "Active" &&
+                item.latitude &&
+                item.longitude &&
+                item.ddate !== null &&
+                item.dtime !== null &&
+                item.timestamp !== null &&
+                item.av24h !== null &&
+                item.av12h !== null &&
+                item.av6h !== null &&
+                item.av3h !== null &&
+                item.av1h !== null &&
+                item.pm25 !== null &&
+                item.pm10 !== null &&
+                item.pm100 !== null &&
+                item.aqi !== null &&
+                item.temperature !== null &&
+                item.humidity !== null &&
+                item.pres !== null &&
+                item.color !== null &&
+                item.trend !== null &&
+                itemDate === today // ตรวจสอบว่าเป็นวันที่เดียวกับวันนี้
+              );
+            })
+            .map((item) => ({
+              id: item.dvid,
+              title: item.place,
+              description: `PM2.5: ${item.pm25 ?? "N/A"} µg/m³`,
+              coordinate: {
+                latitude: item.latitude,
+                longitude: item.longitude,
+              },
+              pm25: item.pm25 || 0,
+              ddate: item.ddate, // เก็บค่าของ ddate ไว้ใน markers
+              dtime: format(new Date(`${item.ddate} ${item.dtime}`), "hh:mm a"), // เก็บค่าของ dtime ไว้ใน markers
+            }));
+
+          setMarkers(filteredMarkers); // ใช้ markers ที่กรองแล้ว
+        } else {
+          Alert.alert("Error", "Failed to fetch markers data.");
+        }
+      } catch (error) {
+        console.error("Error fetching markers:", error);
+        Alert.alert("Error", "Unable to connect to the server.");
+      }
+    };
+
+    fetchMarkers();
+  }, []);
 
   const moveToCurrentLocation = async () => {
     try {
@@ -74,74 +125,112 @@ const Maps = () => {
     }
   };
 
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+
+    try {
+      const result = await Location.geocodeAsync(searchQuery);
+      if (result.length > 0) {
+        const { latitude, longitude } = result[0];
+        setRegion({
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        });
+      } else {
+        Alert.alert("Error", "Location not found.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to search location.");
+      console.error(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      {/* Search Input */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Enter location"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <Icon name="search" size={20} color="black" />
+        </TouchableOpacity>
+      </View>
+
       <MapView
-  style={styles.map}
-  region={region}
-  onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
-  mapType={mapType}
->
-  {markers.map((marker) => (
-    <Marker
-      key={marker.id}
-      coordinate={marker.coordinate}
-      title={marker.title}
-      description={marker.description}
-      pinColor={
-        marker.pm25 <= 50
-          ? "green"
-          : marker.pm25 <= 100
-          ? "yellow"
-          : marker.pm25 <= 150
-          ? "orange"
-          : "red"
-      }
-    >
-      <Callout>
-  <View style={styles.customCallout}>
-    {/* PM2.5 Circle */}
-    <View
-      style={[
-        styles.pmCircle,
-        {
-          backgroundColor:
-            marker.pm25 <= 50
-              ? "green"
-              : marker.pm25 <= 100
-              ? "yellow"
-              : marker.pm25 <= 150
-              ? "orange"
-              : "red",
-        },
-      ]}
-    >
-      <Text style={styles.pmValue}>{marker.pm25}</Text>
-    </View>
+        style={styles.map}
+        region={region}
+        onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
+        mapType={mapType}
+      >
+        {markers.map((marker, index) => (
+          <Marker
+            key={`${marker.id}-${index}`}
+            id={marker.deviceid}
+            coordinate={marker.coordinate}
+            title={marker.title}
+            description={marker.description}
+            pinColor={
+              marker.pm25 <= 50
+                ? "green"
+                : marker.pm25 <= 100
+                ? "yellow"
+                : marker.pm25 <= 150
+                ? "orange"
+                : "red"
+            }
+          >
+            <Callout>
+              <View style={styles.customCallout}>
+                {/* PM2.5 Circle */}
+                <View
+                  style={[
+                    styles.pmCircle,
+                    {
+                      backgroundColor:
+                        marker.pm25 <= 50
+                          ? "green"
+                          : marker.pm25 <= 100
+                          ? "yellow"
+                          : marker.pm25 <= 150
+                          ? "orange"
+                          : "red",
+                    },
+                  ]}
+                >
+                  <Text style={styles.pmValue}>{marker.pm25}</Text>
+                </View>
 
-    {/* Information Section */}
-    <View style={styles.infoContainer}>
-      <Text style={styles.title}>{marker.title}</Text>
-      <Text style={styles.subtitle}>21/11/2024 - 11.00 AM</Text>
-      <Text style={styles.description}>
-        Quality of PM 2.5 is{" "}
-        {marker.pm25 <= 50
-          ? "Good"
-          : marker.pm25 <= 100
-          ? "Moderate"
-          : marker.pm25 <= 150
-          ? "Unhealthy"
-          : "Pretty Bad"}
-      </Text>
-    </View>
-  </View>
-</Callout>
+                {/* Information Section */}
+                <View style={styles.infoContainer}>
+                  <Text style={styles.title}>{marker.title}</Text>
+                  <Text style={styles.subtitle}>
+                    {marker.ddate
+                      ? `${marker.ddate} - ${marker.dtime}`
+                      : "Date not available"}
+                  </Text>
 
-
-    </Marker>
-  ))}
-</MapView>
-
+                  <Text style={styles.description}>
+                    Quality of PM 2.5 is{" "}
+                    {marker.pm25 <= 50
+                      ? "Good"
+                      : marker.pm25 <= 100
+                      ? "Moderate"
+                      : marker.pm25 <= 150
+                      ? "Unhealthy"
+                      : "Pretty Bad"}
+                  </Text>
+                </View>
+              </View>
+            </Callout>
+          </Marker>
+        ))}
+      </MapView>
 
       {/* Map Type Button */}
       <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
@@ -205,6 +294,32 @@ const styles = StyleSheet.create({
   map: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
+  },
+  searchContainer: {
+    position: "absolute",
+    top: 10,
+    left: 20,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    zIndex: 1000,
+  },
+  searchInput: {
+    flex: 1,
+    height: 35,
+    fontSize: 14,
+    paddingHorizontal: 10,
+  },
+  searchButton: {
+    padding: 5,
   },
   iconButton: {
     position: "absolute",
@@ -326,6 +441,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#333",
   },
-  
-  
 });
