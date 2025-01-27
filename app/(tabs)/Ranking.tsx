@@ -24,7 +24,7 @@ const Ranking = () => {
   const renderRankItem = ({ item }: { item: Ranking_type }) => (
     <TouchableOpacity
       style={styles.ContainerItem}
-      onPress={() => router.push(`/(tabs)/Home`)}
+      onPress={() => route.push(`/(tabs)/Home`)}
     >
       <View style={styles.ItemContainer}>
         <View style={styles.LeftContainer}>
