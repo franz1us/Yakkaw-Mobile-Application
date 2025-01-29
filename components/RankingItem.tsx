@@ -15,7 +15,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
   return (
     <TouchableOpacity
       style={styles.ContainerItem}
-      onPress={() => route.push(`/(tabs)/Home`)}
+      onPress={() => router.push({ pathname: "/Station", params: { Station: JSON.stringify(item) } })}
     >
       <View style={styles.ItemContainer}>
         <View style={styles.LeftContainer}>
