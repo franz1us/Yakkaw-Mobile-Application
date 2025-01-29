@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
   gpsButton: {
     position: "absolute",
     bottom: 120,
-    right: 10,
+    right: 20,
     backgroundColor: "rgba(255,255,255, 0.7)",
     padding: 5,
     borderRadius: 50,
