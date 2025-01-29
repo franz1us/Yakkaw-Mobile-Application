@@ -333,6 +333,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 60,
     right: 10,
+    right: 10,
     backgroundColor: "rgba(255,255,255, 0.7)",
     padding: 5,
     borderRadius: 50,
@@ -371,7 +372,7 @@ const styles = StyleSheet.create({
   },
   legend: {
     position: "absolute",
-    bottom: 90,
+    bottom: 10,
     left: 10,
     right: 10,
     flexDirection: "row",
