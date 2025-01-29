@@ -1,8 +1,22 @@
+// Settings.tsx
 import React from 'react';
 import { StyleSheet, Text, View, Switch, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // ไอคอนที่ต้องการ
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+
+type RootStackParamList = {
+  Settings: undefined;
+  About: undefined;
+  ContactUs: undefined;
+  FAQ: undefined;
+  Start: undefined;
+};
+
+type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Settings'>;
 
 const Settings = () => {
+  const navigation = useNavigation<SettingsScreenNavigationProp>();
   const [isNotificationEnabled, setIsNotificationEnabled] = React.useState(true);
 
   const toggleNotification = () => {
@@ -35,7 +49,7 @@ const Settings = () => {
       </TouchableOpacity>
 
       {/* Select Location */}
-      <TouchableOpacity style={styles.row}>
+      <TouchableOpacity style={styles.row} onPress={() =>navigation.navigate('Start')}>
         <View style={styles.rowLeft}>
           <Icon name="place" size={24} color="#333" />
           <Text style={styles.rowText}>Select location</Text>
@@ -45,19 +59,19 @@ const Settings = () => {
 
       {/* About Section */}
       <Text style={styles.sectionHeader}>About</Text>
-      <TouchableOpacity style={styles.row}>
+      <TouchableOpacity style={styles.row} onPress={() => navigation.navigate('ContactUs')}>
         <View style={styles.rowLeft}>
           <Icon name="phone" size={24} color="#333" />
           <Text style={styles.rowText}>Contact Us</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.row}>
+      <TouchableOpacity style={styles.row} onPress={() => navigation.navigate('FAQ')}>
         <View style={styles.rowLeft}>
           <Icon name="help-outline" size={24} color="#333" />
           <Text style={styles.rowText}>FAQ</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.row}>
+      <TouchableOpacity style={styles.row} onPress={() => navigation.navigate('About')}>
         <View style={styles.rowLeft}>
           <Icon name="info-outline" size={24} color="#333" />
           <Text style={styles.rowText}>About Yakkaw</Text>
