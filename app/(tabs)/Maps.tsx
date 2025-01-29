@@ -127,14 +127,21 @@ const Maps = () => {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
-
+  
     try {
-      const result = await Location.geocodeAsync(searchQuery);
-      if (result.length > 0) {
-        const { latitude, longitude } = result[0];
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+          searchQuery
+        )}&format=json&addressdetails=1`
+      );
+      const data = await response.json();
+  
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
+  
         setRegion({
-          latitude,
-          longitude,
+          latitude: parseFloat(lat),
+          longitude: parseFloat(lon),
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         });
@@ -146,6 +153,7 @@ const Maps = () => {
       console.error(error);
     }
   };
+  
 
   return (
     <View style={styles.container}>
