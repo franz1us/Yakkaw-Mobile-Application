@@ -16,7 +16,7 @@ const Start: React.FC = () => {
   const renderItem = ({ item }: { item: { id: string; name: string; } }) => (
     <TouchableOpacity
       style={styles.locationItem}
-      onPress={() => route.push(`/(tabs)/Home`)}
+      onPress={() => route.push(`/back/Home`)}
       // onPress={() => route.push(`/location/${item.id}`)}
     >
       <Text style={styles.locationName}>{item.name}</Text>
