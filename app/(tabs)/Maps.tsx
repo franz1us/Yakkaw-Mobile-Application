@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   },
   gpsButton: {
     position: "absolute",
-    bottom: 60,
+    bottom: 120,
     right: 10,
     backgroundColor: "rgba(255,255,255, 0.7)",
     padding: 5,
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   },
   legend: {
     position: "absolute",
-    bottom: 10,
+    bottom: 90,
     left: 10,
     right: 10,
     flexDirection: "row",
