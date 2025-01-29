@@ -95,12 +95,12 @@ const Home = () => {
       </View>
       <View style={styles.nbContain}>
         <Text style={styles.headerText}>Nearby stations</Text>
-        <View style={styles.insContain}>
         <View style={styles.stationCard}>
             <View style={styles.lsContain}>
-              <View style={styles.stationAQI}>
-                <Text style={[styles.stationAQIValue, { color: getAqiColor(airQualityData.currentAqi) }]}>{airQualityData.currentAqi}</Text>
-                <Text style={[styles.stationAQIUnit, { color: getAqiColor(airQualityData.currentAqi) }]}>µg/m³</Text>
+              <View style={[styles.stationAQI, { backgroundColor: getAqiColor(airQualityData.currentAqi) }]}>
+                <Text style={styles.stationAQIUnit}>{airQualityData.temperature}</Text>
+                <Text style={styles.stationAQIValue}>{airQualityData.currentAqi}</Text>
+                <Text style={styles.stationAQIUnit}>µg/m³</Text>
               </View>
             </View>
             <View style={styles.stationCardContent}>
@@ -126,15 +126,14 @@ const Home = () => {
                 {renderStars()}
               </View>
               <View style={styles.setnbText}>
-                <Text style={styles.stationMDataTime}>Data as of </Text>
-                <Text style={styles.stationDataTime}>2024-10-09, </Text>
-                <Text style={styles.stationMDataTime}>Time </Text>
-                <Text style={styles.stationDataTime}>12:56</Text>
+                <Text style={[styles.stationDataTime, {color: '#2196F3'}]}>Data as of</Text>
+                <Text style={[styles.stationDataTime, {color: '#111111'}]}>2024-10-09,</Text>
+                <Text style={[styles.stationDataTime, {color: '#2196F3'}]}>Time</Text>
+                <Text style={[styles.stationDataTime, {color: '#111111'}]}>12:56</Text>
               </View>
             </View>
           </View>
         </View>
-      </View>
     </ThemedView>
   );
 };
@@ -207,6 +206,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
+  lsContain:{},
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -217,60 +217,67 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   insContain: {
-    marginTop: 10,
   },
   stationCard: {
+    flexDirection:'row',
     backgroundColor: 'rgba(211, 211, 211, 0.2)',
     borderRadius: 8,
-    padding: 16,
+    marginTop: 10,
     marginBottom: 16,
   },
   stationCardContent: {
     // ... styling for station card content ...
+    flexDirection: 'column',
+    flex:1,
   },
   stationHeaderContent: {
     flexDirection: 'column',
-    alignItems: 'flex-end',
+    // backgroundColor: 'gray',
+    marginHorizontal: 16,
+    marginVertical: 5,
   },
   stationName: {
-    fontSize: 18,
+    textAlign:'right',
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   stationAddress: {
+    textAlign:'right',
     fontSize: 14,
     color: '#888888',
     marginBottom: 8,
   },
   stationAQI: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     alignContent: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     backgroundColor: '#FFFFFF',
-    width: 90,
     borderRadius: 15,
     borderColor: '#000000',
-    padding: 4,
+    flex: 1,
+    paddingHorizontal: 18,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 0.2, // Add depth with shadow
   },
   stationAQIValue: {
-    fontSize: 28,
+    fontSize: 36,
     fontWeight: 'bold',
     marginRight: 4,
+    color: 'white',
   },
   stationAQIUnit: {
     fontSize: 16,
+    color: 'white',
   },
   stationHistory: {
     flexDirection: 'row',
     alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    marginTop: 8,
   },
   stationHistoryContain: {
     alignContent: 'center',
@@ -289,22 +296,19 @@ const styles = StyleSheet.create({
   stationRating: {
     // ... styling for star rating ...
     flexDirection: "row",
-    marginTop: 10
+    marginVertical: 16,
+    marginHorizontal: 16,
   },
   stationDataTime: {
     fontSize: 10,
-    color: '#888888',
-    marginTop: 8,
+    textAlign:'center',
+    marginHorizontal: 4,
   },
-  stationMDataTime: {
-    fontSize: 10,
-    color: '#2196F3',
-    marginTop: 8,
-  },
+    // color: '#2196F3',
   setnbText: {
+    marginHorizontal:5,
+    marginVertical:5,
     justifyContent: 'flex-end',
     flexDirection: 'row',
-  },
-  lsContain: {
   },
 });
