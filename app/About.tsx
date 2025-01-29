@@ -7,7 +7,7 @@ const About = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Header */}
-      <Text style={styles.header}>เกี่ยวกับเรา</Text>
+      {/* <Text style={styles.header}>เกี่ยวกับเรา</Text> */}
 
       {/* About Section */}
       <View style={styles.section}>

@@ -20,7 +20,7 @@ const ContactUs = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Contact Us</Text>
+
 
       {/* Email Section */}
       <TouchableOpacity style={styles.section} onPress={handleEmailPress}>

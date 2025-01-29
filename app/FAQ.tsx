@@ -28,7 +28,7 @@ const FAQ = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>FAQ</Text>
+      {/* <Text style={styles.header}>FAQ</Text> */}
 
       {/* FAQ List */}
       {faqData.map((item, index) => (
