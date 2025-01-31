@@ -1,223 +1,276 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { LineChart } from 'react-native-chart-kit';
 
-const data = {
-  province: [
-    { label: 'Chiang Rai', value: 'Chiang Rai' },
-    { label: 'Chiang Mai', value: 'Chiangmai' },
-    { label: 'Mae Hong Son', value: 'Mae Hong Son' },
-    { label: 'Phrae', value: 'Phrae' },
-  ],
-  time: [
-    { label: '01:00 PM', value: '01:00' },
-    { label: '03:00 AM', value: '03:00' },
-    { label: '05:00 AM', value: '05:00' },
-    { label: '07:00 AM', value: '07:00' },
-    { label: '09:00 AM', value: '09:00' },
-  ],
-};
-
-const DropdownComponent = () => {
+const App = () => {
   const [provinceOpen, setProvinceOpen] = useState(false);
   const [provinceValue, setProvinceValue] = useState(null);
-  const [timeOpen, setTimeOpen] = useState(false);
-  const [timeValue, setTimeValue] = useState(null);
-
+  const [selectedRange, setSelectedRange] = useState('24 Hour');
 
   const dataForChart = {
-    labels: [
-      '1:00', '3:00', '5:00', '7:00', '9:00', '11:00', '13:00', '15:00',
-      '17:00', '19:00', '21:00', '23:00',
-    ],
+    labels: ['1:00', '3:00', '5:00', '7:00', '9:00', '11:00', '13:00', '15:00', '17:00', '19:00', '21:00', '23:00'],
     datasets: [
       {
-        data: [45, 30, 60, 80, 55, 75, 45, 30, 70, 90, 50, 60],
+        data: [50, 70, 30, 90, 40, 100, 60, 80, 50, 75, 40, 90],
         strokeWidth: 2,
         color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
       },
     ],
   };
 
-  const minNow = 45;
-  const maxNow = 45;
-
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Dropdown
-          open={provinceOpen}
-          setOpen={setProvinceOpen}
-          value={provinceValue}
-          setValue={setProvinceValue}
-          items={data.province}
-          placeholder="Pro"
-          iconName="Safety"
-        />
-        <Dropdown
-          open={timeOpen}
-          setOpen={setTimeOpen}
-          value={timeValue}
-          setValue={setTimeValue}
-          items={data.time}
-          placeholder="Time"
-          iconName="clockcircleo"
-        />
-      </View>
-      <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>24-Hour PM2.5 Levels</Text>
-        <LineChart
-          data={dataForChart}
-          width={380}
-          height={260}
-          chartConfig={{
-            backgroundColor: '#ffffff',
-            backgroundGradientFrom: '#f0f0f0',
-            backgroundGradientTo: '#ffffff',
-            decimalPlaces: 2,
-            color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.2,
-              shadowRadius: 6,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '2',
-              stroke: '#4CAF50',
-            },
-          }}
-          bezier
-          style={styles.graphStyle}
-        />
-      </View>
-      <View style={styles.valueContainer}>
-        <View style={styles.valueBox}>
-          <Text style={styles.valueTitle}>Min. Now</Text>
-          <Text style={styles.valueNumber}>{minNow}</Text>
-          <Text style={styles.valueUnit}>µg/m³</Text>
-        </View>
-        <View style={styles.valueBox}>
-          <Text style={styles.valueTitle}>Max. Now</Text>
-          <Text style={styles.valueNumber}>{maxNow}</Text>
-          <Text style={styles.valueUnit}>µg/m³</Text>
-        </View>
-      </View>
-    </View>
+    <FlatList
+      data={[]}
+      keyExtractor={(item, index) => index.toString()}
+      nestedScrollEnabled={true}
+      ListHeaderComponent={
+        <>
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.aqiValue}>100<Text style={styles.aqiUnit}> ug/m³</Text></Text>
+            <View style={styles.dropdownContainer}>
+              <DropDownPicker
+                open={provinceOpen}
+                value={provinceValue}
+                items={[
+                  { label: 'Chiang Rai', value: 'Chiang Rai' },
+                  { label: 'Chiang Mai', value: 'Chiangmai' },
+                  { label: 'Mae Hong Son', value: 'Mae Hong Son' },
+                  { label: 'Phrae', value: 'Phrae' },
+                ]}
+                setOpen={setProvinceOpen}
+                setValue={setProvinceValue}
+                placeholder="จังหวัด"
+                style={styles.dropdown}
+                dropDownContainerStyle={styles.dropDownContainer}
+                renderLeftIcon={() => (
+                  <AntDesign style={styles.icon} name="enviromento" size={18} color="black" />
+                )}
+              />
+            </View>
+          </View>
+
+          <Text style={styles.aqiSubtitle}>
+            <Text style={{ fontWeight: 'bold' }}>PM 2.5</Text> : 21 NOV 2024 - 11.34 AM
+          </Text>
+
+          <View style={styles.chartContainer}>
+            <LineChart
+              data={dataForChart}
+              width={350} 
+              height={260}
+              chartConfig={{
+                backgroundColor: '#ffffff',
+                backgroundGradientFrom: '#ffffff',
+                backgroundGradientTo: '#ffffff',
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                propsForDots: {
+                  r: (dotIndex) => (dotIndex === 5 ? '8' : '3'),
+                  strokeWidth: '2',
+                  stroke: (dotIndex) => (dotIndex === 5 ? 'black' : '#4CAF50'),
+                },
+              }}
+              bezier
+              style={styles.chart}
+            />
+          </View>
+
+      
+          <View style={styles.timeFilter}>
+            {['24 Hour', '1 Week', '1 Month', '3 Month', '1 Year'].map((range) => (
+              <TouchableOpacity
+                key={range}
+                style={[styles.timeButton, selectedRange === range && styles.activeTimeButton]}
+                onPress={() => setSelectedRange(range)}
+              >
+                <Text style={[styles.timeText, selectedRange === range && styles.activeTimeText]}>{range}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* 24-Hour Report */}
+          <View style={styles.reportContainer}>
+            <Text style={styles.reportTitle}>24-Hour Report</Text>
+
+            <View style={styles.cardContainer}>
+              {[
+                { time: '7.00', level: 45, status: 'Now is great', color: '#72E672', temp: 33 },
+                { time: '8.00', level: 60, status: 'Please Careful', color: '#FFD966', temp: 30 },
+                { time: '9.00', level: 90, status: 'Pretty Bad', color: '#FF6666', temp: 27 },
+              ].map((item) => (
+                <View key={item.time} style={styles.reportCard}>
+                  <Text style={styles.reportTime}>At {item.time}</Text>
+                  <Text style={styles.reportStatus}>{item.status}</Text>
+                  <View style={[styles.aqiBox, { backgroundColor: item.color }]}>
+                    <Text style={styles.reportLevel}>{item.level}</Text>
+                    <Text style={styles.reportUnit}>µg/m³</Text>
+                  </View>
+                  <Text style={styles.reportTemp}>{item.temp} °C</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </>
+      }
+    />
   );
 };
 
-const Dropdown = ({ open, setOpen, value, setValue, items, placeholder, iconName }) => (
-  <DropDownPicker
-    open={open}
-    value={value}
-    items={items}
-    setOpen={setOpen}
-    setValue={setValue}
-    placeholder={placeholder}
-    searchable={true}
-    listMode="SCROLLVIEW" 
-    style={styles.customDropdown}
-    placeholderStyle={styles.customPlaceholderStyle}
-    textStyle={styles.customSelectedTextStyle}
-    dropDownContainerStyle={styles.customDropDownContainerStyle}
-    renderLeftIcon={() => (
-      <AntDesign
-        style={styles.customIcon}
-        color="black"
-        name={iconName}
-        size={18}
-      />
-    )}
-  />
-);
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-    backgroundColor: '#F9F9F9',
-  },
+  // **Header & Dropdown**
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 16,
+    paddingHorizontal: 10,
+    marginTop: 20
   },
-  customDropdown: {
-    width: '40%',
-    height: 50,
-    backgroundColor: '#F4F4F4',
-    borderWidth: 0,
-    borderRadius: 25,
-    paddingLeft: 15,
-    paddingRight: 1,
-  },
-  customPlaceholderStyle: {
-    fontSize: 15,
-    color: 'gray',
-  },
-  customSelectedTextStyle: {
-    fontSize: 17,
-    color: 'black',
-  },
-  customDropDownContainerStyle: {
-    borderRadius: 10,
-    backgroundColor: '#FFF',
-    elevation: 2,
-  },
-  customIcon: {
-    marginRight: 8, 
-  },
-  chartContainer: {
-    marginTop: 30,
-    alignItems: 'center',
-  },
-  chartTitle: {
-    fontSize: 17,
+  
+  aqiValue: {
+    fontSize: 50,
     fontWeight: 'bold',
-    marginBottom: 10,
+    textAlign: 'left',
+    marginLeft: 25
   },
-  graphStyle: {
-    borderRadius: 16,
+
+  aqiUnit: {
+    fontSize: 20,
+    fontWeight: '400'
+    
   },
-  valueContainer: {
+
+  aqiSubtitle: {
+    fontSize: 16,
+    color: 'gray',
+    marginLeft: 8,
+    marginBottom: 25
+  },
+
+  dropdownContainer: {
+    width: '50%',
+    alignItems: 'flex-end'
+  },
+
+  dropdown: {
+    width: '100%',
+    backgroundColor: '#FFF',
+    borderRadius: 25,
+    elevation: 3,
+    paddingLeft: 20
+  },
+
+  dropDownContainer: {
+    backgroundColor: '#FFF'
+  },
+
+  icon: { 
+    marginRight: 8
+  },
+
+  // **Chart **
+  chartContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginVertical: 10
+  },
+
+  chart: {
+    width: '80%',
+    borderRadius: 16
+  },
+
+  // **Time Range Buttons**
+  timeFilter: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20
+  },
+  timeButton: {
+    padding: 10,
+    marginHorizontal: 7,
+    backgroundColor: '#EAEAEA',
+    borderRadius: 8
+  },
+
+  activeTimeButton: {
+    backgroundColor: '#87CEFA'
+  },
+
+  timeText: {
+    color: '#000'
+  },
+
+  activeTimeText: {
+    color: '#FFF'
+  },
+
+  // **24-Hour Report**
+  reportContainer: {
+    backgroundColor: '#FFF',
+    borderRadius: 30,
+    padding: 20,
+    alignItems: 'center'
+  },
+
+  reportTitle: {
+    fontSize: 21,
+    fontWeight: 'bold',
+    marginBottom: 10
+  },
+
+  cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 20,
   },
-  valueBox: {
-    backgroundColor: '#FFFFFF',
-    width: 140,
-    height: 100,
+  reportCard: {
+    backgroundColor: '#FFF',
+    width: 110,
+    height: 160,
     borderRadius: 16,
+    padding: 10,
+    alignItems: 'center',
+    elevation: 3
+  },
+
+  reportTime: {
+    fontSize: 19,
+    fontWeight: 'bold'
+  },
+
+  reportStatus: {
+    fontSize: 15,
+    textAlign: 'center'
+  },
+
+  aqiBox: {
+    width: 80,
+    height: 55,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 2,
+    marginBottom: 10
   },
-  valueTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'gray',
-  },
-  valueNumber: {
-    fontSize: 40,
+
+  reportLevel: {
+    fontSize: 25,
     fontWeight: 'bold',
-    color: '#4CAF50', 
+    color: '#FFF'
   },
-  valueUnit: {
-    fontSize: 14,
-    color: 'gray',
+
+  reportUnit: {
+    fontSize: 25,
+    color: '#FFF'
+  },
+
+  reportTemp: {
+    fontSize: 20,
+    color: 'gray'
   },
 });
 
-export default DropdownComponent;
+export default App;
