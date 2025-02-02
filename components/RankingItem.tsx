@@ -1,8 +1,10 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Ranking_type } from "@/constants/Ranking_Data";
 import { router } from "expo-router";
+import axios from "axios";
+import { format } from "date-fns";
 
 
 interface RankingItemProps {
@@ -10,7 +12,67 @@ interface RankingItemProps {
 }
 
 const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
-  const route = router;
+  const [dataRanking, setDataranking] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+
+  const API_URL = "https://yakkaw.mfu.ac.th/api/yakkaw/devices";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(API_URL);
+        if (response.status === 200 && response.data.response) {
+          const today = format(new Date(), "yyyy-MM-dd");
+  
+         
+          const filteredData = response.data.response
+            .filter((item: any) => {
+              return (
+                item.status === "Active" &&
+                item.ddate === today && 
+                item.latitude &&
+                item.longitude &&
+                item.pm25 !== null &&
+                item.temperature !== null &&
+                item.trend !== null
+              );
+            })
+            .map((item: any) => ({
+              id: item.dvid,
+              place: item.place || "Unknown",
+              pm25: item.pm25 ?? 0,
+              temperature: item.temperature ?? "N/A",
+              trend: item.trend || "No Trend",
+              ddate: item.ddate,
+              dtime: format(new Date(`${item.ddate} ${item.dtime}`), "hh:mm a"),
+            }));
+  
+          setDataranking(filteredData);
+          console.log(response);
+        } else {
+          setError("Failed to fetch data.");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("Unable to connect to the server.");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+
+  if(loading){
+    return <ActivityIndicator size="large" color="#000ff"/>
+  }
+
+  if(error){
+    return <Text>{error}</Text>
+  }
+
 
   return (
     <TouchableOpacity
@@ -112,7 +174,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               {item.temperature}°C
             </Text>
           </View>
-          <Text style={styles.locationName}>{item.context_status}</Text>
+          <Text style={styles.locationName}>Status</Text>
         </View>
 
         <View style={styles.CenterContainer}>
@@ -281,7 +343,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
             />
           </TouchableOpacity>
 
-          {/* Image Below Heart */}
+          
           <Image
             source={{
               uri: "https://cdn-cm.freepik.com/resources/0ec440c7-ee7a-4d91-a28b-7423d74fe104.jpg?token=exp=1738057225~hmac=f58fb15da534ad5329a8788ab97b9f14a5589d47247705c194cf99d263e19171", // Replace with your image URL
@@ -292,6 +354,31 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
     </TouchableOpacity>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const styles = StyleSheet.create({
     container: {
