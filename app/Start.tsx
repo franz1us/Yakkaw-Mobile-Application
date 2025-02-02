@@ -8,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 import { router } from 'expo-router';
-import { InitLocation } from '@/constants/InitLocation';
+import { Ranking_Data } from '@/constants/Ranking_Data';
 
 const Start: React.FC = () => {
   const route = router;
@@ -16,7 +16,7 @@ const Start: React.FC = () => {
   const renderItem = ({ item }: { item: { id: string; name: string; } }) => (
     <TouchableOpacity
       style={styles.locationItem}
-      onPress={() => route.push(`/(tabs)/Home`)}
+      onPress={() => route.push(`/back/Home`)}
       // onPress={() => route.push(`/location/${item.id}`)}
     >
       <Text style={styles.locationName}>{item.name}</Text>
@@ -40,7 +40,7 @@ const Start: React.FC = () => {
         <Text style={styles.middleDescription}>To set as default</Text>
       </View>
       <FlatList
-        data={InitLocation}
+        data={Ranking_Data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />

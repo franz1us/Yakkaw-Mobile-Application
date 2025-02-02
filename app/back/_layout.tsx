@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
 import { Platform, useColorScheme, View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -9,6 +9,14 @@ import HeaderTitle from '@/components/HeaderTitle';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const router = useRouter();
+
+  const goToSetting = () => {
+    router.push('/Setting')
+  };
+  const goToNotification = () => {
+    router.push('/Notification')
+  };
 
   return (
     <Tabs
@@ -44,10 +52,10 @@ export default function TabLayout() {
           ),
           headerRight: () => (
             <View style={styles.headerIcons}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={goToNotification}>
                 <Image source={require('@/assets/images/Notification.png')} style={styles.icon} />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={goToSetting}>
                 <Image source={require('@/assets/images/Settings.png')} style={styles.icon} />
               </TouchableOpacity>
             </View>
@@ -66,10 +74,10 @@ export default function TabLayout() {
           ),
           headerRight: () => (
             <View style={styles.headerIcons}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={goToNotification}>
                 <Image source={require('@/assets/images/Notification.png')} style={styles.icon} />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={goToSetting}>
                 <Image source={require('@/assets/images/Settings.png')} style={styles.icon} />
               </TouchableOpacity>
             </View>
@@ -88,10 +96,10 @@ export default function TabLayout() {
           ),
           headerRight: () => (
             <View style={styles.headerIcons}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={goToNotification}>
                 <Image source={require('@/assets/images/Notification.png')} style={styles.icon} />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={goToSetting}>
                 <Image source={require('@/assets/images/Settings.png')} style={styles.icon} />
               </TouchableOpacity>
             </View>
@@ -110,10 +118,10 @@ export default function TabLayout() {
           ),
           headerRight: () => (
             <View style={styles.headerIcons}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={goToNotification}>
                 <Image source={require('@/assets/images/Notification.png')} style={styles.icon} />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={goToSetting}>
                 <Image source={require('@/assets/images/Settings.png')} style={styles.icon} />
               </TouchableOpacity>
             </View>
