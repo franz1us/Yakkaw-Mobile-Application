@@ -14,12 +14,13 @@ const Ranking: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <SearchBar onFilter={handleFilter} />
+      <SearchBar onFilter={handleFilter} />  
+      {/* Search function not ready to use */}
       <Text style={styles.Topic}>Most PM2.5</Text>
       <FlatList
         data={filteredData}
         renderItem={renderRankItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.pid}
         ListEmptyComponent={<Text style={styles.emptyText}>No results found.</Text>}
       />
     </View>
