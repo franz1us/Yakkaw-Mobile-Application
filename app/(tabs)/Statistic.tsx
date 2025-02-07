@@ -42,7 +42,7 @@ const App = () => {
                 ]}
                 setOpen={setProvinceOpen}
                 setValue={setProvinceValue}
-                placeholder="จังหวัด"
+                placeholder="Province"
                 style={styles.dropdown}
                 dropDownContainerStyle={styles.dropDownContainer}
                 renderLeftIcon={() => (
@@ -57,27 +57,37 @@ const App = () => {
           </Text>
 
           <View style={styles.chartContainer}>
-            <LineChart
-              data={dataForChart}
-              width={350} 
-              height={260}
-              chartConfig={{
-                backgroundColor: '#ffffff',
-                backgroundGradientFrom: '#ffffff',
-                backgroundGradientTo: '#ffffff',
-                decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                propsForDots: {
-                  r: (dotIndex) => (dotIndex === 5 ? '8' : '3'),
-                  strokeWidth: '2',
-                  stroke: (dotIndex) => (dotIndex === 5 ? 'black' : '#4CAF50'),
-                },
-              }}
-              bezier
-              style={styles.chart}
-            />
-          </View>
+  <LineChart
+    data={dataForChart}
+    width={350} 
+    height={260}
+    chartConfig={{
+      backgroundColor: '#ffffff',
+      backgroundGradientFrom: '#ffffff',
+      backgroundGradientTo: '#ffffff',
+      decimalPlaces: 0,
+
+      color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
+      labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+
+      propsForLabels: {
+        fontSize: 8, 
+        fontWeight: '400', 
+        fontFamily: 'Arial', 
+        color: '#333', 
+      },
+
+      propsForDots: {
+        r: (dotIndex) => (dotIndex === 5 ? '8' : '3'),
+        strokeWidth: '2',
+        stroke: (dotIndex) => (dotIndex === 5 ? 'black' : '#4CAF50'),
+      },
+    }}
+    bezier
+    style={styles.chart}
+  />
+</View>
+
 
       
           <View style={styles.timeFilter}>
@@ -131,27 +141,27 @@ const styles = StyleSheet.create({
   },
   
   aqiValue: {
-    fontSize: 50,
+    fontSize: 40,
     fontWeight: 'bold',
     textAlign: 'left',
     marginLeft: 25
   },
 
   aqiUnit: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '400'
     
   },
 
   aqiSubtitle: {
-    fontSize: 16,
+    fontSize: 13,
     color: 'gray',
-    marginLeft: 8,
+    marginLeft: 22,
     marginBottom: 25
   },
 
   dropdownContainer: {
-    width: '50%',
+    width: '40%',
     alignItems: 'flex-end'
   },
 
@@ -175,8 +185,9 @@ const styles = StyleSheet.create({
   chartContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
+    width: '80%',
     marginVertical: 10
+    
   },
 
   chart: {
@@ -191,10 +202,10 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   timeButton: {
-    padding: 10,
+    padding: 9,
     marginHorizontal: 7,
     backgroundColor: '#EAEAEA',
-    borderRadius: 8
+    borderRadius: 9
   },
 
   activeTimeButton: {
@@ -239,12 +250,19 @@ const styles = StyleSheet.create({
 
   reportTime: {
     fontSize: 19,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginBottom: 2
+    
+    
+    
+    
   },
 
   reportStatus: {
-    fontSize: 15,
-    textAlign: 'center'
+    fontSize: 13,
+    textAlign: 'center',
+    marginBottom: 13
+    
   },
 
   aqiBox: {
@@ -253,11 +271,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 15
   },
 
   reportLevel: {
-    fontSize: 25,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#FFF'
   },
@@ -265,11 +283,13 @@ const styles = StyleSheet.create({
   reportUnit: {
     fontSize: 25,
     color: '#FFF'
+    
   },
 
   reportTemp: {
     fontSize: 20,
     color: 'gray'
+    
   },
 });
 
