@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -13,8 +13,33 @@ import { router } from "expo-router";
 interface RankingItemProps {
   item: Ranking_type;
 }
+const ConditionRankingStyles = (av6h: number) => {
+  return {
+    borderColor:
+      av6h > 91 ? "#FF8787"
+        : av6h > 51 ? "#FFD68B"
+        : av6h > 38 ? "#FFFFA8"
+        : av6h > 26 ? "#BFFFA1"
+        : "#C1E5FF",
+
+    backgroundColor:
+      av6h > 91 ? "#FF2C2C"
+        : av6h > 51 ? "#FFA500"
+        : av6h > 38 ? "#F0F000"
+        : av6h > 26 ? "#38B000"
+        : "#2EA8FF",
+
+    textColor:
+      av6h > 91 ? "white"
+        : av6h > 50 ? "black"
+        : av6h > 38 ? "black"
+        : "white",
+  };
+};
 
 const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
+  const styleCondition =  ConditionRankingStyles(item.av6h);
+
   return (
     <TouchableOpacity
       style={styles.ContainerItem}
@@ -29,44 +54,16 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
         <View style={styles.LeftContainer}>
           <View
             style={[
-              styles.Circle,
-              {
-                borderColor:
-                  item.av6h > 91
-                    ? "#FF2C2C"
-                    : item.av6h > 51
-                    ? "#FFD68B"
-                    : item.av6h > 38
-                    ? "#FFFFA8"
-                    : item.av6h > 26
-                    ? "#BFFFA1"
-                    : "#C1E5FF",
-                backgroundColor:
-                  item.av6h > 91
-                    ? "#FF2C2C"
-                    : item.av6h > 51
-                    ? "#FFA500"
-                    : item.av6h > 38
-                    ? "#F0F000"
-                    : item.av6h > 26
-                    ? "#38B000"
-                    : "#2EA8FF",
+              styles.Circle,{
+                borderColor:styleCondition.borderColor,backgroundColor:styleCondition.backgroundColor
               },
-              {},
             ]}
           >
             <Text
               style={[
                 styles.Text_circle,
                 {
-                  color:
-                    item.av6h > 91
-                      ? "white"
-                      : item.av6h > 50
-                      ? "black"
-                      : item.av6h > 38
-                      ? "black"
-                      : "white",
+                  color:styleCondition.textColor
                 },
               ]}
             >
@@ -76,14 +73,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               style={[
                 styles.big_textcircle,
                 {
-                  color:
-                    item.av6h > 91
-                      ? "white"
-                      : item.av6h > 50
-                      ? "black"
-                      : item.av6h > 38
-                      ? "black"
-                      : "white",
+                  color:styleCondition.textColor
                 },
               ]}
             >
@@ -93,14 +83,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               style={[
                 styles.Text_circle,
                 {
-                  color:
-                    item.av6h > 91
-                      ? "white"
-                      : item.av6h > 50
-                      ? "black"
-                      : item.av6h > 38
-                      ? "black"
-                      : "white",
+                  color:styleCondition.textColor
                 },
               ]}
             >
@@ -110,14 +93,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               style={[
                 styles.Text_circle,
                 {
-                  color:
-                    item.av6h > 91
-                      ? "white"
-                      : item.av6h > 50
-                      ? "black"
-                      : item.av6h > 38
-                      ? "black"
-                      : "white",
+                  color:styleCondition.textColor
                 },
               ]}
             >
@@ -142,24 +118,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                 style={[
                   styles.Average_Item1,
                   {
-                    // borderColor:
-                    //   item.pm25_6hr > 100
-                    //     ? "#FF8787"
-                    //     : item.pm25_6hr > 50
-                    //     ? "#FFFFA8"
-                    //     : item.pm25_6hr > 30
-                    //     ? "#BFFFA1"
-                    //     : "#C1E5FF",
-                    backgroundColor:
-                      item.av6h > 91
-                        ? "#FF2C2C"
-                        : item.av6h > 51
-                        ? "#FFA500"
-                        : item.av6h > 38
-                        ? "#F0F000"
-                        : item.av6h > 26
-                        ? "#38B000"
-                        : "#2EA8FF",
+                    backgroundColor:styleCondition.backgroundColor
                   },
                 ]}
               >
@@ -167,14 +126,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                   style={[
                     styles.Avg_text1,
                     {
-                      color:
-                        item.av6h > 91
-                          ? "white"
-                          : item.av6h > 50
-                          ? "black"
-                          : item.av6h > 38
-                          ? "black"
-                          : "white",
+                      color:styleCondition.textColor
                     },
                   ]}
                 >
@@ -190,24 +142,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                 style={[
                   styles.Average_Item1,
                   {
-                    // borderColor:
-                    //   item.pm25_6hr > 100
-                    //     ? "#FF8787"
-                    //     : item.pm25_6hr > 50
-                    //     ? "#FFFFA8"
-                    //     : item.pm25_6hr > 30
-                    //     ? "#BFFFA1"
-                    //     : "#C1E5FF",
-                    backgroundColor:
-                      item.av6h > 91
-                        ? "#FF2C2C"
-                        : item.av6h > 51
-                        ? "#FFA500"
-                        : item.av6h > 38
-                        ? "#F0F000"
-                        : item.av6h > 26
-                        ? "#38B000"
-                        : "#2EA8FF",
+                    backgroundColor:styleCondition.backgroundColor
                   },
                 ]}
               >
@@ -215,14 +150,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                   style={[
                     styles.Avg_text1,
                     {
-                      color:
-                        item.av6h > 91
-                          ? "white"
-                          : item.av6h > 50
-                          ? "black"
-                          : item.av6h > 38
-                          ? "black"
-                          : "white",
+                      color:styleCondition.textColor
                     },
                   ]}
                 >
@@ -238,24 +166,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                 style={[
                   styles.Average_Item1,
                   {
-                    // borderColor:
-                    //   item.pm25_6hr > 100
-                    //     ? "#FF8787"
-                    //     : item.pm25_6hr > 50
-                    //     ? "#FFFFA8"
-                    //     : item.pm25_6hr > 30
-                    //     ? "#BFFFA1"
-                    //     : "#C1E5FF",
-                    backgroundColor:
-                      item.av6h > 91
-                        ? "#FF2C2C"
-                        : item.av6h > 51
-                        ? "#FFA500"
-                        : item.av6h > 38
-                        ? "#F0F000"
-                        : item.av6h > 26
-                        ? "#38B000"
-                        : "#2EA8FF",
+                    backgroundColor:styleCondition.backgroundColor
                   },
                 ]}
               >
@@ -263,14 +174,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                   style={[
                     styles.Avg_text1,
                     {
-                      color:
-                        item.av6h > 91
-                          ? "white"
-                          : item.av6h > 50
-                          ? "black"
-                          : item.av6h > 38
-                          ? "black"
-                          : "white",
+                      color:styleCondition.textColor
                     },
                   ]}
                 >
