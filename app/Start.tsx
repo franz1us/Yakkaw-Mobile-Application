@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import useRanking from "@/hooks/useRanking";
+const route = router
 
 const Start: React.FC = () => {
   const { filteredData, loading, error } = useRanking();
