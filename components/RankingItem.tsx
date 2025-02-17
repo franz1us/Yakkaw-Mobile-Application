@@ -36,6 +36,20 @@ const ConditionRankingStyles = (av6h: number) => {
         : "white",
   };
 };
+const Status = (av6h: number) => {
+  if (av6h > 91) return "Dangerous";
+  if (av6h > 50) return "Influential Healthy";
+  if (av6h > 37) return "Moderate";
+  if (av6h > 25) return "Good";
+  return "Excellent";
+};
+
+const trendArrow = (trend:string) =>{
+  if(trend == "d") return <AntDesign name="caretdown" size={20} color="green"/>;
+  if(trend == "u") return <AntDesign name="caretup" size={20} color="red"/>;
+  if(trend == "e") return <AntDesign name="swap" size={20} color="green"/>;
+  return null;
+}
 
 const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
   const styleCondition =  ConditionRankingStyles(item.av6h);
@@ -55,7 +69,8 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
           <View
             style={[
               styles.Circle,{
-                borderColor:styleCondition.borderColor,backgroundColor:styleCondition.backgroundColor
+                borderColor:styleCondition.borderColor,
+                backgroundColor:styleCondition.backgroundColor
               },
             ]}
           >
@@ -100,7 +115,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               {item.temperature}°C
             </Text>
           </View>
-          <Text style={styles.locationName}>Status</Text>
+          <Text style={styles.locationName}>{Status(item.av6h)}</Text>
         </View>
 
         <View style={styles.CenterContainer}>
@@ -188,7 +203,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
           </View>
 
           <View>
-            <Text style={styles.locationName}>Trend {item.trend}</Text>
+            <Text style={styles.locationName}>Trend {trendArrow(item.trend)}</Text>
           </View>
         </View>
 
@@ -240,6 +255,7 @@ const styles = StyleSheet.create({
     height: 110,
     borderRadius: 100,
     borderWidth: 6,
+    marginBottom:3,
   },
   LeftContainer: {
     alignItems: "center",
