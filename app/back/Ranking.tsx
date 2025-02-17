@@ -11,20 +11,21 @@ const Ranking: React.FC = () => {
 
 
   useEffect(() => {
-    setDisplayData(filteredData);
+    setDisplayData(filteredData.slice(0,10));
   }, [filteredData]);
   
-  const renderRankItem = ({ item }: { item: Ranking_type }) => (
-    <RankingItem item={item} />
-  );
+
+  const handleSearch = (results: Ranking_type[]) =>{
+    setDisplayData(results);
+  }
 
   return (
     <View style={styles.container}>
-      <SearchBar data={filteredData} onFilter={setDisplayData} />
+      <SearchBar data={filteredData} onFilter={handleSearch} />
       <Text style={styles.Topic}>Most PM2.5</Text>
       <FlatList
-        data={displayData}
-        renderItem={renderRankItem}
+        data={displayData.slice(0,10)}
+        renderItem={({item}) => <RankingItem item={item}/>}
         keyExtractor={(item) => item.pid}
         ListEmptyComponent={<Text style={styles.emptyText}>No results found.</Text>}
       />
