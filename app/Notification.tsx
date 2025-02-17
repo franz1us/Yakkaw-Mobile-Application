@@ -1,35 +1,36 @@
-import React from 'react';
-import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, FlatList, Image } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 
-const notifications = [
-  {
-    id: '1',
-    title: 'Air Quality Update',
-    message: 'PM 2.5 levels are high in your area. Please wear a mask.',
-    time: '2 hours ago',
-    icon: require('@/assets/images/air-quality.png'),
-  },
-  {
-    id: '2',
-    title: 'Maintenance Alert',
-    message: 'Scheduled maintenance for sensor XYZ on Jan 25.',
-    time: '1 day ago',
-    icon: require('@/assets/images/maintainance.png'),
-  },
-  {
-    id: '3',
-    title: 'Weather Alert',
-    message: 'Heavy rainfall expected tomorrow. Stay safe.',
-    time: '3 days ago',
-    icon: require('@/assets/images/rainy.png'),
-  },
-];
-
 const Notification = () => {
+  const [notifications, setNotifications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    // ฟังก์ชันเพื่อดึงข้อมูลจาก API
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/notifications');
+        if (!response.ok) {
+          throw new Error('Failed to fetch notifications');
+        }
+        const data = await response.json();
+        setNotifications(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
   const renderNotification = ({ item }) => (
     <View style={styles.notificationCard}>
-      <Image source={item.icon} style={styles.notificationIcon} />
+      {/* ตรวจสอบว่า icon เป็น URL หรือไม่ ถ้าใช่ ให้ใช้ Image */}
+      <Image source={{ uri: item.icon }} style={styles.notificationIcon} />
       <View style={styles.notificationTextContainer}>
         <Text style={styles.notificationTitle}>{item.title}</Text>
         <Text style={styles.notificationMessage}>{item.message}</Text>
@@ -37,6 +38,14 @@ const Notification = () => {
       </View>
     </View>
   );
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
 
   return (
     <ThemedView style={styles.container}>
