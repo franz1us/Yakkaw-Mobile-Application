@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import { View, TextInput, StyleSheet } from "react-native";
-import { Ranking_Data, Ranking_type } from "@/constants/Ranking_Data";
+import { Ranking_type } from "@/constants/Ranking_Data";
 
-type SearchProps = {
+interface SearchProps {
+  data: Ranking_type[];
   onFilter: (filteredResults: Ranking_type[]) => void;
-};
+}
 
-const Search = ({ onFilter }: SearchProps) => {
+const SearchBar: React.FC<SearchProps> = ({ data, onFilter }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
-    const filteredData = Ranking_Data.filter((item: Ranking_type) =>
-      item.name.toLowerCase().includes(text.toLowerCase())
+    const filteredData = data.filter((item) =>
+      item.place.toLowerCase().includes(text.toLowerCase())
     );
     onFilter(filteredData);
   };
@@ -32,7 +33,7 @@ const Search = ({ onFilter }: SearchProps) => {
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
-    marginBottom:10
+    marginBottom: 10,
   },
   searchInput: {
     height: 45,
@@ -44,4 +45,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Search;
+export default SearchBar;
