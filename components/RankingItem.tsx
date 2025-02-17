@@ -16,38 +16,38 @@ interface RankingItemProps {
 const ConditionRankingStyles = (av6h: number) => {
   return {
     borderColor:
-      av6h > 91 ? "#FF8787"
-        : av6h > 51 ? "#FFD68B"
-        : av6h > 38 ? "#FFFFA8"
-        : av6h > 26 ? "#BFFFA1"
+      av6h >= 91 ? "#FF8787"
+        : av6h >= 51 ? "#FFD68B"
+        : av6h >= 38 ? "#FFFFA8"
+        : av6h >= 26 ? "#BFFFA1"
         : "#C1E5FF",
 
     backgroundColor:
-      av6h > 91 ? "#FF2C2C"
-        : av6h > 51 ? "#FFA500"
-        : av6h > 38 ? "#F0F000"
-        : av6h > 26 ? "#38B000"
+      av6h >= 91 ? "#FF2C2C"
+        : av6h >= 51 ? "#FFA500"
+        : av6h >= 38 ? "#F0F000"
+        : av6h >= 26 ? "#38B000"
         : "#2EA8FF",
 
     textColor:
-      av6h > 91 ? "white"
-        : av6h > 50 ? "black"
-        : av6h > 38 ? "black"
+      av6h >= 91 ? "white"
+        : av6h >= 51 ? "black"
+        : av6h >= 38 ? "black"
         : "white",
   };
 };
 const Status = (av6h: number) => {
-  if (av6h > 91) return "Dangerous";
-  if (av6h > 50) return "Influential Healthy";
-  if (av6h > 37) return "Moderate";
-  if (av6h > 25) return "Good";
+  if (av6h >= 91) return "Dangerous";
+  if (av6h >= 51) return "Influential Healthy";
+  if (av6h >= 38) return "Moderate";
+  if (av6h >= 26) return "Good";
   return "Excellent";
 };
 
 const trendArrow = (trend:string) =>{
   if(trend == "d") return <AntDesign name="caretdown" size={20} color="green"/>;
   if(trend == "u") return <AntDesign name="caretup" size={20} color="red"/>;
-  if(trend == "e") return <AntDesign name="swap" size={20} color="green"/>;
+  if(trend == "e") return <AntDesign name="swap" size={20} color="grey"/>;
   return null;
 }
 
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     height: 110,
     borderRadius: 100,
     borderWidth: 6,
-    marginBottom:3,
+    marginBottom:18, //Gap between Circle and status
   },
   LeftContainer: {
     alignItems: "center",
