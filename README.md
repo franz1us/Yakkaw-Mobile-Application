@@ -24,7 +24,7 @@ Yakkaw is a modern mobile application designed to monitor air pollution issues i
 | **Category** | **Technology** |
 |-------------|---------------|
 | **Frontend** | React Native |
-| **Backend** | Node.js, Firebase |
+| **Backend** | Node.js, Go(Echo) |
 | **Database** | MySQL, Firebase Firestore |
 | **APIs & Services** | Various External APIs |
 
@@ -48,7 +48,7 @@ cd Yakkaw-Mobile-Application
 npm install  # or yarn install
 
 # Run the app
-npm start  # or react-native run-android
+ npm start --reset-cache  # or react-native run-android
 ```
 
 ---
