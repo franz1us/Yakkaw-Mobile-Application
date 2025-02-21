@@ -118,7 +118,7 @@ export default function TabLayout() {
           ),
           headerRight: () => (
             <View style={styles.headerIcons}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={goToNotification}>
                 <Image source={require('@/assets/images/Notification.png')} style={styles.icon} />
               </TouchableOpacity>
               <TouchableOpacity onPress={goToSetting}>
