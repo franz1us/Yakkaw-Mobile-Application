@@ -7,10 +7,10 @@ import { OpaqueColorValue, StyleProp, ViewStyle } from 'react-native';
 
 // Add your SFSymbol to MaterialIcons mappings here.
 const MAPPING = {
-  'house.fill': 'home',
-  'paperplane.fill': 'send',
-  'ranking.star': 'star',
-  'statistic.chart': 'bar-chart',
+  'home': 'home',
+  'mapping': 'room',
+  'ranking': 'format-list-bulleted',
+  'statistic': 'bar-chart',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
 } as const;
@@ -19,10 +19,10 @@ const MAPPING = {
 
 
 export type IconSymbolName =
-  | 'house.fill'
-  | 'paperplane.fill'
-  | 'ranking.star'
-  | 'statistic.chart'
+  | 'home'
+  | 'mapping'
+  | 'ranking'
+  | 'statistic'
   | 'chevron.left.forwardslash.chevron.right'
   | 'chevron.right';
 

@@ -1,27 +1,26 @@
 import { Image, StyleSheet, Platform, Button, Text, View, TouchableOpacity } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { router } from 'expo-router';
+import { useEffect } from 'react';
 
 export default function HomeScreen() {
   const route = router;
+
+  useEffect(()=>{
+    const timer = setTimeout(()=>{
+      route.push('/Start');
+    },2000);
+
+    return()=> clearTimeout(timer);
+  },[route])
   return (
     <View style={styles.container}>
       <View style={styles.image_text}>
         <Image
-        source={require('@/assets/images/yakkaw_icon.png')} 
-        style={styles.image}
+          source={require('@/assets/images/yakkaw_icon.png')}
+          style={styles.image}
         />
         <Text style={styles.text}>Y A K K A W</Text>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => route.push('/Start')}>
-          <Text style={styles.buttonText}>Yakkaw Start</Text>
-        </TouchableOpacity>
+        <Text style={styles.description}>สมาคมยักษ์ขาว</Text>
       </View>
     </View>
   );
@@ -30,53 +29,34 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    padding: 16,
-    backgroundColor: '#F9FAFB', 
-  },
-  image_text:{
-    flex:1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding:0,
-    margin:0,
+    padding: 16,
+    backgroundColor: '#F9FAFB',
+  },
+  image_text: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 0,
+    margin: 0,
   },
   image: {
     width: 300,
     resizeMode: 'contain',
-    marginBottom: 0,
+    marginBottom: 20,
   },
   text: {
-    fontSize: 18,
+    fontSize: 24,
     color: '#333',
     textAlign: 'center',
-    marginBottom: 0,
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 40,
-    left: 0,
-    right: 0,
-    alignItems: 'center', 
-
-  },
-  button: {
-    backgroundColor: '#007BFF', // Primary color
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8, // Slightly rounded corners for the button
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 5, // For Android shadow
-  },
-  buttonText: {
+  description: {
     fontSize: 16,
-    color: '#fff', // White text for contrast
-    fontWeight: '600',
+    color: '#555',
     textAlign: 'center',
+    marginTop: 10,
   },
 });
+
