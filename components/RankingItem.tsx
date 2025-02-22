@@ -9,6 +9,7 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Ranking_type } from "@/constants/Ranking_Data";
 import { router } from "expo-router";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface RankingItemProps {
   item: Ranking_type;
@@ -36,20 +37,33 @@ const ConditionRankingStyles = (av6h: number) => {
         : "white",
   };
 };
+
 const Status = (av6h: number) => {
   if (av6h >= 91) return "Dangerous";
-  if (av6h >= 51) return "Influential Healthy";
+  if (av6h >= 51) return "Unhealthy";
   if (av6h >= 38) return "Moderate";
   if (av6h >= 26) return "Good";
   return "Excellent";
 };
 
-const trendArrow = (trend:string) =>{
-  if(trend == "d") return <AntDesign name="caretdown" size={20} color="green"/>;
-  if(trend == "u") return <AntDesign name="caretup" size={20} color="red"/>;
-  if(trend == "e") return <AntDesign name="swap" size={20} color="grey"/>;
+const trendArrow = (trend: string) => {
+  if (trend === "d") return <MaterialIcons name="trending-down" size={20} color="green" />;
+  if (trend === "u") return <MaterialIcons name="trending-up" size={20} color="red" />;
+  if (trend === "e") return <MaterialIcons name="trending-flat" size={20} color="gray" />;
   return null;
-}
+};
+
+
+
+const imageStatus = (av6h: number) => {
+  if (av6h >= 91) return require('../assets/images/Dangerous.png');
+  if (av6h >= 51) return require('../assets/images/Unhealthy.png');
+  if (av6h >= 38) return require('../assets/images/Moderate.png');
+  if (av6h >= 26) return require('../assets/images/Good.png');
+  return require('../assets/images/Excellent.png');
+};
+
+
 
 const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
   const styleCondition =  ConditionRankingStyles(item.av6h);
@@ -115,14 +129,16 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               {item.temperature}°C
             </Text>
           </View>
-          <Text style={styles.locationName}>{Status(item.av6h)}</Text>
+          <Text style={styles.status_text}>{Status(item.av6h)}</Text>
         </View>
+
+
 
         <View style={styles.CenterContainer}>
           <View>
             <Text style={styles.locationName}>{item.place}</Text>
             <Text style={styles.Avg_text2}>
-              {item.date} {item.time}
+              {item.date}   {item.time}
             </Text>
           </View>
           <Text style={styles.locationName}>Average</Text>
@@ -219,9 +235,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
         </TouchableOpacity>
 
         <Image
-          source={{
-            uri: "https://cdn-cm.freepik.com/resources/0ec440c7-ee7a-4d91-a28b-7423d74fe104.jpg?token=exp=1738057225~hmac=f58fb15da534ad5329a8788ab97b9f14a5589d47247705c194cf99d263e19171", // Replace with your image URL
-          }}
+          source={imageStatus(item.av6h)}
           style={styles.itemImage}
         />
       </View>
@@ -247,6 +261,7 @@ const styles = StyleSheet.create({
   ItemContainer: {
     flexDirection: "row",
     alignItems: "center",
+    position: "relative",
   },
   Circle: {
     justifyContent: "center",
@@ -255,20 +270,17 @@ const styles = StyleSheet.create({
     height: 110,
     borderRadius: 100,
     borderWidth: 6,
-    marginBottom:18, //Gap between Circle and status
+    marginBottom:10,
   },
   LeftContainer: {
     alignItems: "center",
+    width:110,
   },
   CenterContainer: {
     justifyContent: "center",
     alignItems: "flex-start",
     paddingHorizontal: 10,
     width: 180,
-  },
-  RightContainer: {
-    alignItems: "center",
-    justifyContent: "center",
   },
   Average_Container: {
     flexDirection: "row",
@@ -283,8 +295,8 @@ const styles = StyleSheet.create({
   Average_Item1: {
     justifyContent: "center",
     alignItems: "center",
-    width: 50,
-    backgroundColor: "#FF2C2C",
+    width: 47,
+    height:32,
     borderRadius: 15,
     padding: 5,
     marginHorizontal: 3,
@@ -292,7 +304,7 @@ const styles = StyleSheet.create({
   Avg_text1: {
     color: "white",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "700",
   },
   Avg_text2: {
     color: "#AEAEAE",
@@ -303,7 +315,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
     alignItems: "center",
   },
-
+  status_text:{
+    textAlign:'center',
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
   locationName: {
     fontSize: 16,
     fontWeight: "bold",
@@ -321,7 +338,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 10,
   },
-
   Text_circle: {
     fontSize: 13,
     fontWeight: "500",
@@ -333,14 +349,14 @@ const styles = StyleSheet.create({
   favoriteIcon: {
     position: "absolute",
     top: -10,
-    right: -10,
+    right: 10,
     padding: 5,
+    zIndex: 1,
   },
   itemImage: {
-    width: 50,
-    height: 50,
-    marginTop: 25,
-    borderRadius: 10,
+    width: 80,
+    height: 80,
+    resizeMode: 'contain',
   },
 });
 
