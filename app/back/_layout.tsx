@@ -44,7 +44,7 @@ export default function TabLayout() {
         name="Home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="home" color={color} />,
           headerTitle: () => (
             <View style={styles.header}>
               <Text style={styles.headerTitle}>Yakkaw</Text>
@@ -66,7 +66,7 @@ export default function TabLayout() {
         name="Maps"
         options={{
           title: 'Maps',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="mapping" color={color} />,
           headerTitle: () => (
             <View style={styles.header}>
               <Text style={styles.headerTitle}>Maps</Text>
@@ -88,7 +88,7 @@ export default function TabLayout() {
         name="Ranking"
         options={{
           title: 'Ranking',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="ranking.star" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="ranking" color={color} />,
           headerTitle: () => (
             <View style={styles.header}>
               <Text style={styles.headerTitle}>Ranking</Text>
@@ -110,7 +110,7 @@ export default function TabLayout() {
         name="Statistic"
         options={{
           title: 'Statistic',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="statistic.chart" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="statistic" color={color} />,
           headerTitle: () => (
             <View style={styles.header}>
               <Text style={styles.headerTitle}>Statistic</Text>
