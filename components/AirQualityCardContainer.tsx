@@ -8,7 +8,7 @@ const AirQualityCardContainer = ({ selectedMarker, setSelectedMarker }) => {
   return (
     <View style={styles.cardContainer}>
       <AirQualityCard
-        aqi={selectedMarker?.aqi ?? 0}
+        
         pm25={selectedMarker?.pm25 ?? 0}
         temperature={selectedMarker?.temperature ?? 0}
         humidity={selectedMarker?.humidity ?? 0}
