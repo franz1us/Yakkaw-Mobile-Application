@@ -4,21 +4,29 @@ import SearchBar from "@/components/SearchBar";
 import RankingItem from "@/components/RankingItem";
 import useRanking from "@/hooks/useRanking"; 
 import { Ranking_type } from "@/constants/Ranking_Data";
+import Loading from "@/components/Loading";
+import Error from "@/components/Error";
 
 const Ranking: React.FC = () => {
-  const { filteredData} = useRanking();
+  const { filteredData,loading,error} = useRanking();
   const [displayData, setDisplayData] = useState(filteredData);
 
 
   useEffect(() => {
-    setDisplayData(filteredData.slice(0,10));
+    setDisplayData(filteredData.slice(0, 10));
   }, [filteredData]);
-  
 
-  const handleSearch = (results: Ranking_type[]) =>{
+  const handleSearch = (results: Ranking_type[]) => {
     setDisplayData(results);
+  };
+
+  if (loading) {
+    return <Loading />;  
   }
 
+  if (error) {
+    return <Error message={error} onRetry={() => {}} />;
+  }
   return (
     <View style={styles.container}>
       <SearchBar data={filteredData} onFilter={handleSearch} />

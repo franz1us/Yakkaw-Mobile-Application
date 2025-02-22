@@ -167,6 +167,7 @@ export type Ranking_type = {
   time:string;
   date:string;
   place:string;
+  address:string;
   pm25:number;
   av6h: number;
   av3h: number;

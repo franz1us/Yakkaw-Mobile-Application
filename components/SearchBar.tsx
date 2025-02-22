@@ -13,10 +13,12 @@ const SearchBar: React.FC<SearchProps> = ({ data, onFilter }) => {
   const handleSearch = (text: string) => {
     setSearchQuery(text);
     const filteredData = data.filter((item) =>
-      item.place.toLowerCase().includes(text.toLowerCase())
+      (item.address?.toLowerCase() || "").includes(text.toLowerCase()) ||
+      (item.place?.toLowerCase() || "").includes(text.toLowerCase())
     );
     onFilter(filteredData);
   };
+  
 
   return (
     <View style={styles.container}>
