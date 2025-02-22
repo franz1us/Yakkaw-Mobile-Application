@@ -50,6 +50,7 @@ const useRanking = () => {
             .map((item: any) => ({
               pid: item.dvid,
               place: item.place || "Unknown",
+              address: item.address ||"Unknown",
               av6h: item.pm25 ?? 0,
               av3h: item.pm25 ?? 0,
               av1h: item.pm25 ?? 0,
