@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -17,6 +17,7 @@ interface RankingItemProps {
 
 const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
   const styleCondition =  ConditionRankingStyles(item.av6h);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   return (
     <TouchableOpacity
@@ -173,14 +174,11 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
           </View>
         </View>
 
-        <TouchableOpacity
-          // onPress={() => toggleFavorite(item.id)}
-          style={styles.favoriteIcon}
-        >
+        <TouchableOpacity onPress={() => setIsFavorite(!isFavorite)} style={styles.favoriteIcon}>
           <AntDesign
-            name={item.favorite ? "heart" : "hearto"}
-            size={24}
-            color={item.favorite ? "red" : "gray"}
+            name={isFavorite ? "heart" : "hearto"}
+            size={28}
+            color={isFavorite ? "#FF2C2C" : "#555"}
           />
         </TouchableOpacity>
 

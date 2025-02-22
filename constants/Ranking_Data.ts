@@ -163,14 +163,30 @@
 export type Ranking_type = {
   favorite: boolean;
   temperature:number;
-  trend:number;
+  trend:string;
   time:string;
   date:string;
   place:string;
   address:string;
   pm25:number;
+  pm10:number;
+  pm100:number;
+  av24h:number;
+  av12h:number;
   av6h: number;
   av3h: number;
   av1h: number;
+  humidity:number;
+  pres:number;
+  aqi:number;
   pid: string;
+  latitude:number;
+  longitude:number;
 };
+
+export type DataCardProps = {
+  title: string;
+    value: number;
+    unit: string;
+    icon: React.ReactNode;
+}
