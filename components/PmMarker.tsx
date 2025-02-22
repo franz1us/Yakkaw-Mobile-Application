@@ -5,9 +5,9 @@ const PmMarker = ({ pm25, trend, onPress }) => {
   // Determine PM2.5 background color
   const getCircleColor = () => {
     if (pm25 <= 20) return "#508C9B"
-    if (pm25 <= 50) return "#4CAF50"; // Green (Good)
-    if (pm25 <= 80) return "#FFEB3B"; // Yellow (Moderate)
-    if (pm25 <= 150) return "#FF9800"; // Orange (Unhealthy for sensitive groups)
+    if (pm25 <= 50) return "#4CAF50"; 
+    if (pm25 <= 80) return "#FFEB3B"; 
+    if (pm25 <= 150) return "#FF9800"; 
     return "#F44336"; // Red (Unhealthy)
   };
 
