@@ -97,7 +97,6 @@ const Maps = () => {
               },
               pm25: item.pm25 ?? 0,
               pm10: item.pm10 ?? 0,
-              aqi: item.aqi > 0 ? item.aqi : Math.max(item.pm25, item.pm10), // ป้องกัน AQI = 0
               temperature: item.temperature ?? "N/A",
               humidity: item.humidity ?? "N/A",
               ddate: item.ddate,
@@ -243,8 +242,7 @@ const Maps = () => {
               onPress={() => {
                 if (
                   marker &&
-                  marker.pm25 !== undefined &&
-                  marker.aqi !== undefined
+                  marker.pm25 !== undefined 
                 ) {
                   setSelectedMarker(marker);
                 } else {
@@ -299,15 +297,15 @@ const Maps = () => {
 
         {!selectedMarker && (
           <View style={styles.legend}>
-            <View style={[styles.legendBar, { backgroundColor: "blue" }]} />
+            <View style={[styles.legendBar, { backgroundColor: "#508C9B" }]} />
             <Text style={styles.legendLabel}>Excellent</Text>
-            <View style={[styles.legendBar, { backgroundColor: "green" }]} />
+            <View style={[styles.legendBar, { backgroundColor: "#4CAF50" }]} />
             <Text style={styles.legendLabel}>Good</Text>
-            <View style={[styles.legendBar, { backgroundColor: "yellow" }]} />
+            <View style={[styles.legendBar, { backgroundColor: "#FFEB3B" }]} />
             <Text style={styles.legendLabel}>Moderate</Text>
-            <View style={[styles.legendBar, { backgroundColor: "orange" }]} />
+            <View style={[styles.legendBar, { backgroundColor: "#FF9800" }]} />
             <Text style={styles.legendLabel}>Unhealthy</Text>
-            <View style={[styles.legendBar, { backgroundColor: "red" }]} />
+            <View style={[styles.legendBar, { backgroundColor: "#F44336" }]} />
             <Text style={styles.legendLabel}>Danger</Text>
           </View>
         )}
