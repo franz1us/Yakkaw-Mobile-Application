@@ -38,6 +38,13 @@ export const trendArrow = (trend: string) => {
     if (trend === "e") return <MaterialIcons name="trending-flat" size={20} color="gray" />;
     return null;
   };
+
+export const trendArrowStation = (trend: string) => {
+    if (trend === "d") return <MaterialIcons name="trending-down" size={30} color="green" />;
+    if (trend === "u") return <MaterialIcons name="trending-up" size={30} color="red" />;
+    if (trend === "e") return <MaterialIcons name="trending-flat" size={30} color="gray" />;
+    return null;
+  };
   
 export const imageStatus = (av6h: number) => {
     if (av6h >= 91) return require('../assets/images/Dangerous.png');
@@ -46,3 +53,20 @@ export const imageStatus = (av6h: number) => {
     if (av6h >= 26) return require('../assets/images/Good.png');
     return require('../assets/images/Excellent.png');
   };
+
+export const getPM25Status = (pm25: number) => {
+  if (pm25 >= 91) return "Dangerous";
+  if (pm25 >= 51) return "Unhealthy";
+  if (pm25 >= 38) return "Moderate";
+  if (pm25 >= 26) return "Good";
+  return "Excellent";
+  };
+  
+export const getPM25Color = (pm25: number) => {
+    if (pm25 >= 91) return "#FF2C2C";
+    if (pm25 >= 51) return "#FFA500";
+    if (pm25 >= 38) return "#F0F000";
+    if (pm25 >= 26) return "#38B000";
+    return "#2EA8FF";
+  };
+  
