@@ -8,10 +8,15 @@ import {
   Text,
   Alert,
   TextInput,
+  TouchableWithoutFeedback,
 } from "react-native";
 import MapView, { Callout, Marker, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import PmMarker from "@/components/PmMarker";
+import AirQualityCardContainer from "@/components/AirQualityCardContainer";
+import { LocationObjectCoords } from "expo-location";
+import LottieView from "lottie-react-native";
 
 const API_URL = "";
 
@@ -20,6 +25,7 @@ const Maps = () => {
     "standard"
   );
   const [showMenu, setShowMenu] = useState(false);
+  const [selectedMarker, setSelectedMarker] = useState(null);
   const [region, setRegion] = useState<Region>({
     latitude: 13.7563,
     longitude: 100.5018,
@@ -27,7 +33,11 @@ const Maps = () => {
     longitudeDelta: 4.0,
   });
 
+  const closeAirQualityCard = () => {
+    setSelectedMarker(null);
+  };
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false); // State สำหรับควบคุมการขยาย Search Bar
 
   const toggleMenu = () => {
     setShowMenu((prev) => !prev);
@@ -37,6 +47,8 @@ const Maps = () => {
     setMapType(type);
     setShowMenu(false);
   };
+  const [currentLocation, setCurrentLocation] =
+    useState<LocationObjectCoords | null>(null);
 
   const [markers, setMarkers] = useState([]);
   useEffect(() => {
@@ -45,7 +57,7 @@ const Maps = () => {
         const response = await fetch(API_URL);
         const data = await response.json();
         if (data.status === 200 && data.response) {
-          const today = format(new Date(), "yyyy-MM-dd"); // วันที่ปัจจุบันในรูปแบบ yyyy-MM-dd
+          const today = format(new Date(), "yyyy-MM-dd");
 
           const filteredMarkers = data.response
             .filter((item) => {
@@ -72,7 +84,7 @@ const Maps = () => {
                 item.pres !== null &&
                 item.color !== null &&
                 item.trend !== null &&
-                itemDate === today // ตรวจสอบว่าเป็นวันที่เดียวกับวันนี้
+                itemDate === today
               );
             })
             .map((item) => ({
@@ -83,12 +95,18 @@ const Maps = () => {
                 latitude: item.latitude,
                 longitude: item.longitude,
               },
-              pm25: item.pm25 || 0,
-              ddate: item.ddate, // เก็บค่าของ ddate ไว้ใน markers
-              dtime: format(new Date(`${item.ddate} ${item.dtime}`), "hh:mm a"), // เก็บค่าของ dtime ไว้ใน markers
+              pm25: item.pm25 ?? 0,
+              pm10: item.pm10 ?? 0,
+              aqi: item.aqi > 0 ? item.aqi : Math.max(item.pm25, item.pm10), // ป้องกัน AQI = 0
+              temperature: item.temperature ?? "N/A",
+              humidity: item.humidity ?? "N/A",
+              ddate: item.ddate,
+              dtime: format(new Date(`${item.ddate} ${item.dtime}`), "hh:mm a"),
+              trend: item.trend,
+              color: item.color ?? "N/A",
             }));
 
-          setMarkers(filteredMarkers); // ใช้ markers ที่กรองแล้ว
+          setMarkers(filteredMarkers);
         } else {
           Alert.alert("Error", "Failed to fetch markers data.");
         }
@@ -98,7 +116,21 @@ const Maps = () => {
       }
     };
 
+    const getLocation = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission denied",
+          "Location permission is required to use this feature."
+        );
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({});
+      setCurrentLocation(location.coords);
+    };
+
     fetchMarkers();
+    getLocation();
   }, []);
 
   const moveToCurrentLocation = async () => {
@@ -127,7 +159,7 @@ const Maps = () => {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
-  
+
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
@@ -135,10 +167,10 @@ const Maps = () => {
         )}&format=json&addressdetails=1`
       );
       const data = await response.json();
-  
+
       if (data.length > 0) {
         const { lat, lon } = data[0];
-  
+
         setRegion({
           latitude: parseFloat(lat),
           longitude: parseFloat(lon),
@@ -153,143 +185,134 @@ const Maps = () => {
       console.error(error);
     }
   };
-  
 
   return (
-    <View style={styles.container}>
-      {/* Search Input */}
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Enter location"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-          <Icon name="search" size={20} color="black" />
-        </TouchableOpacity>
-      </View>
-
-      <MapView
-        style={styles.map}
-        region={region}
-        onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
-        mapType={mapType}
-      >
-        {markers.map((marker, index) => (
-          <Marker
-            key={`${marker.id}-${index}`}
-            id={marker.deviceid}
-            coordinate={marker.coordinate}
-            title={marker.title}
-            description={marker.description}
-            pinColor={
-              marker.pm25 <= 50
-                ? "green"
-                : marker.pm25 <= 100
-                ? "yellow"
-                : marker.pm25 <= 150
-                ? "orange"
-                : "red"
-            }
-          >
-            <Callout>
-              <View style={styles.customCallout}>
-                {/* PM2.5 Circle */}
-                <View
-                  style={[
-                    styles.pmCircle,
-                    {
-                      backgroundColor:
-                        marker.pm25 <= 50
-                          ? "green"
-                          : marker.pm25 <= 100
-                          ? "yellow"
-                          : marker.pm25 <= 150
-                          ? "orange"
-                          : "red",
-                    },
-                  ]}
-                >
-                  <Text style={styles.pmValue}>{marker.pm25}</Text>
-                </View>
-
-                {/* Information Section */}
-                <View style={styles.infoContainer}>
-                  <Text style={styles.title}>{marker.title}</Text>
-                  <Text style={styles.subtitle}>
-                    {marker.ddate
-                      ? `${marker.ddate} - ${marker.dtime}`
-                      : "Date not available"}
-                  </Text>
-
-                  <Text style={styles.description}>
-                    Quality of PM 2.5 is{" "}
-                    {marker.pm25 <= 50
-                      ? "Good"
-                      : marker.pm25 <= 100
-                      ? "Moderate"
-                      : marker.pm25 <= 150
-                      ? "Unhealthy"
-                      : "Pretty Bad"}
-                  </Text>
-                </View>
-              </View>
-            </Callout>
-          </Marker>
-        ))}
-      </MapView>
-
-      {/* Map Type Button */}
-      <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
-        <Icon name="layers" size={30} color="black" />
-      </TouchableOpacity>
-
-      {/* GPS Button */}
-      <TouchableOpacity
-        style={styles.gpsButton}
-        onPress={moveToCurrentLocation}
-      >
-        <Icon name="my-location" size={30} color="black" />
-      </TouchableOpacity>
-
-      {showMenu && (
-        <View style={styles.menu}>
+    <TouchableWithoutFeedback onPress={closeAirQualityCard}>
+      <View style={styles.container}>
+        {/* Search Input */}
+        <View
+          style={[
+            styles.searchContainer,
+            isSearchExpanded ? styles.searchExpanded : styles.searchCollapsed,
+          ]}
+        >
+          {isSearchExpanded && (
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Enter location"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus={true}
+            />
+          )}
           <TouchableOpacity
-            onPress={() => selectMapType("standard")}
-            style={styles.menuItem}
+            style={styles.searchButton}
+            onPress={() => {
+              if (isSearchExpanded) {
+                handleSearch();
+              }
+              setIsSearchExpanded((prev) => !prev);
+            }}
           >
-            <Text style={styles.menuText}>Standard</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => selectMapType("satellite")}
-            style={styles.menuItem}
-          >
-            <Text style={styles.menuText}>Satellite</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => selectMapType("hybrid")}
-            style={styles.menuItem}
-          >
-            <Text style={styles.menuText}>Hybrid</Text>
+            <Icon name="search" size={20} color="black" />
           </TouchableOpacity>
         </View>
-      )}
 
-      <View style={styles.legend}>
-        <View style={[styles.legendBar, { backgroundColor: "green" }]} />
-        <Text style={styles.legendLabel}>Good</Text>
+        <MapView
+          style={styles.map}
+          region={region}
+          onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
+          mapType={mapType}
+        >
+          {currentLocation && (
+            <Marker coordinate={currentLocation} title="Your Location">
+              <LottieView
+                source={require("@/assets/animations/location.json")}
+                autoPlay
+                loop
+                style={{ width: 100, height: 100 }}
+              />
+            </Marker>
+          )}
+          {markers.map((marker, index) => (
+            <Marker
+              key={index}
+              coordinate={marker.coordinate}
+              title={marker.title}
+              description={marker.description}
+              onPress={() => {
+                if (
+                  marker &&
+                  marker.pm25 !== undefined &&
+                  marker.aqi !== undefined
+                ) {
+                  setSelectedMarker(marker);
+                } else {
+                  console.error("Invalid marker data:", marker);
+                }
+              }}
+            >
+              <PmMarker pm25={marker.pm25} trend={marker.trend} />
+            </Marker>
+          ))}
+        </MapView>
+        <AirQualityCardContainer
+          selectedMarker={selectedMarker}
+          setSelectedMarker={setSelectedMarker}
+        />
 
-        <View style={[styles.legendBar, { backgroundColor: "yellow" }]} />
-        <Text style={styles.legendLabel}>Moderate</Text>
+        {/* Map Type Button */}
+        <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
+          <Icon name="layers" size={30} color="black" />
+        </TouchableOpacity>
 
-        <View style={[styles.legendBar, { backgroundColor: "orange" }]} />
-        <Text style={styles.legendLabel}>Unhealthy</Text>
+        {/* GPS Button */}
+        <TouchableOpacity
+          style={styles.gpsButton}
+          onPress={moveToCurrentLocation}
+        >
+          <Icon name="my-location" size={30} color="black" />
+        </TouchableOpacity>
 
-        <View style={[styles.legendBar, { backgroundColor: "red" }]} />
-        <Text style={styles.legendLabel}>Hazardous</Text>
+        {showMenu && (
+          <View style={styles.menu}>
+            <TouchableOpacity
+              onPress={() => selectMapType("standard")}
+              style={styles.menuItem}
+            >
+              <Text style={styles.menuText}>Standard</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => selectMapType("satellite")}
+              style={styles.menuItem}
+            >
+              <Text style={styles.menuText}>Satellite</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => selectMapType("hybrid")}
+              style={styles.menuItem}
+            >
+              <Text style={styles.menuText}>Hybrid</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {!selectedMarker && (
+          <View style={styles.legend}>
+            <View style={[styles.legendBar, { backgroundColor: "blue" }]} />
+            <Text style={styles.legendLabel}>Excellent</Text>
+            <View style={[styles.legendBar, { backgroundColor: "green" }]} />
+            <Text style={styles.legendLabel}>Good</Text>
+            <View style={[styles.legendBar, { backgroundColor: "yellow" }]} />
+            <Text style={styles.legendLabel}>Moderate</Text>
+            <View style={[styles.legendBar, { backgroundColor: "orange" }]} />
+            <Text style={styles.legendLabel}>Unhealthy</Text>
+            <View style={[styles.legendBar, { backgroundColor: "red" }]} />
+            <Text style={styles.legendLabel}>Danger</Text>
+          </View>
+        )}
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -305,13 +328,11 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     position: "absolute",
-    top: 10,
-    left: 20,
+    top: 50,
     right: 20,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "white",
-    paddingHorizontal: 10,
     borderRadius: 20,
     elevation: 5,
     shadowColor: "#000",
@@ -319,6 +340,16 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     zIndex: 1000,
+  },
+  searchExpanded: {
+    width: 200,
+    paddingHorizontal: 10,
+  },
+  searchCollapsed: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
   },
   searchInput: {
     flex: 1,
@@ -331,9 +362,8 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     position: "absolute",
-    top: 60,
-    right: 10,
-    right: 10,
+    top: 150,
+    right: 20,
     backgroundColor: "rgba(255,255,255, 0.7)",
     padding: 5,
     borderRadius: 50,
@@ -341,7 +371,7 @@ const styles = StyleSheet.create({
   },
   gpsButton: {
     position: "absolute",
-    bottom: 120,
+    top: 100,
     right: 20,
     backgroundColor: "rgba(255,255,255, 0.7)",
     padding: 5,
@@ -372,7 +402,7 @@ const styles = StyleSheet.create({
   },
   legend: {
     position: "absolute",
-    bottom: 10,
+    bottom: 90,
     left: 10,
     right: 10,
     flexDirection: "row",
@@ -385,7 +415,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   legendBar: {
-    width: 30,
+    width: 25,
     height: 10,
     borderRadius: 5,
   },
