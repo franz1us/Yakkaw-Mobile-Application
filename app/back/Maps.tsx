@@ -10,7 +10,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from "react-native";
-import MapView, { Callout, Marker, Region } from "react-native-maps";
+import MapView, { Marker, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import PmMarker from "@/components/PmMarker";
@@ -32,104 +32,100 @@ const Maps = () => {
     latitudeDelta: 4.0,
     longitudeDelta: 4.0,
   });
-
-  const closeAirQualityCard = () => {
-    setSelectedMarker(null);
-  };
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false); // State สำหรับควบคุมการขยาย Search Bar
-
-  const toggleMenu = () => {
-    setShowMenu((prev) => !prev);
-  };
-
-  const selectMapType = (type: "standard" | "satellite" | "hybrid") => {
-    setMapType(type);
-    setShowMenu(false);
-  };
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [currentLocation, setCurrentLocation] =
     useState<LocationObjectCoords | null>(null);
-
   const [markers, setMarkers] = useState([]);
+
+  // ฟังก์ชัน fetchMarkers ดึงข้อมูล marker จาก API
+  const fetchMarkers = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+      if (data.status === 200 && data.response) {
+        const today = format(new Date(), "yyyy-MM-dd");
+        const filteredMarkers = data.response
+          .filter((item) => {
+            const itemDate = item.ddate ? item.ddate : null;
+            return (
+              item.status === "Active" &&
+              item.latitude &&
+              item.longitude &&
+              item.ddate !== null &&
+              item.dtime !== null &&
+              item.timestamp !== null &&
+              item.av24h !== null &&
+              item.av12h !== null &&
+              item.av6h !== null &&
+              item.av3h !== null &&
+              item.av1h !== null &&
+              item.pm25 !== null &&
+              item.pm10 !== null &&
+              item.pm100 !== null &&
+              item.aqi !== null &&
+              item.temperature !== null &&
+              item.humidity !== null &&
+              item.pres !== null &&
+              item.color !== null &&
+              item.trend !== null &&
+              itemDate === today
+            );
+          })
+          .map((item) => ({
+            id: item.dvid,
+            title: item.place,
+            description: `PM2.5: ${item.pm25 ?? "N/A"} µg/m³`,
+            coordinate: {
+              latitude: item.latitude,
+              longitude: item.longitude,
+            },
+            pm25: item.pm25 ?? 0,
+            pm10: item.pm10 ?? 0,
+            temperature: item.temperature ?? "N/A",
+            pres: item.pres ?? "N/A",
+            humidity: item.humidity ?? "N/A",
+            ddate: item.ddate,
+            dtime: format(new Date(`${item.ddate} ${item.dtime}`), "hh:mm a"),
+            trend: item.trend,
+            color: item.color ?? "N/A",
+          }));
+        setMarkers(filteredMarkers);
+      } else {
+        Alert.alert("Error", "Failed to fetch markers data.");
+      }
+    } catch (error) {
+      console.error("Error fetching markers:", error);
+      Alert.alert("Error", "Unable to connect to the server.");
+    }
+  };
+
+  // ดึงตำแหน่งปัจจุบัน
+  const getLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission denied",
+        "Location permission is required to use this feature."
+      );
+      return;
+    }
+    const location = await Location.getCurrentPositionAsync({});
+    setCurrentLocation(location.coords);
+  };
+
+  // useEffect สำหรับ initial load
   useEffect(() => {
-    const fetchMarkers = async () => {
-      try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        if (data.status === 200 && data.response) {
-          const today = format(new Date(), "yyyy-MM-dd");
-
-          const filteredMarkers = data.response
-            .filter((item) => {
-              const itemDate = item.ddate ? item.ddate : null;
-
-              return (
-                item.status === "Active" &&
-                item.latitude &&
-                item.longitude &&
-                item.ddate !== null &&
-                item.dtime !== null &&
-                item.timestamp !== null &&
-                item.av24h !== null &&
-                item.av12h !== null &&
-                item.av6h !== null &&
-                item.av3h !== null &&
-                item.av1h !== null &&
-                item.pm25 !== null &&
-                item.pm10 !== null &&
-                item.pm100 !== null &&
-                item.aqi !== null &&
-                item.temperature !== null &&
-                item.humidity !== null &&
-                item.pres !== null &&
-                item.color !== null &&
-                item.trend !== null &&
-                itemDate === today
-              );
-            })
-            .map((item) => ({
-              id: item.dvid,
-              title: item.place,
-              description: `PM2.5: ${item.pm25 ?? "N/A"} µg/m³`,
-              coordinate: {
-                latitude: item.latitude,
-                longitude: item.longitude,
-              },
-              pm25: item.pm25 ?? 0,
-              pm10: item.pm10 ?? 0,
-              temperature: item.temperature ?? "N/A",
-              humidity: item.humidity ?? "N/A",
-              ddate: item.ddate,
-              dtime: format(new Date(`${item.ddate} ${item.dtime}`), "hh:mm a"),
-              trend: item.trend,
-              color: item.color ?? "N/A",
-            }));
-
-          setMarkers(filteredMarkers);
-        } else {
-          Alert.alert("Error", "Failed to fetch markers data.");
-        }
-      } catch (error) {
-        console.error("Error fetching markers:", error);
-        Alert.alert("Error", "Unable to connect to the server.");
-      }
-    };
-
-    const getLocation = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permission denied",
-          "Location permission is required to use this feature."
-        );
-        return;
-      }
-      const location = await Location.getCurrentPositionAsync({});
-      setCurrentLocation(location.coords);
-    };
-
     fetchMarkers();
     getLocation();
+  }, []);
+
+  // useEffect สำหรับ polling ข้อมูล marker ทุก 30 วินาที
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetchMarkers();
+    }, 30000); // 30000 ms = 30 วินาที
+    return () => clearInterval(intervalId);
   }, []);
 
   const moveToCurrentLocation = async () => {
@@ -142,7 +138,6 @@ const Maps = () => {
         );
         return;
       }
-
       const location = await Location.getCurrentPositionAsync({});
       setRegion({
         latitude: location.coords.latitude,
@@ -158,7 +153,6 @@ const Maps = () => {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
-
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
@@ -166,10 +160,8 @@ const Maps = () => {
         )}&format=json&addressdetails=1`
       );
       const data = await response.json();
-
       if (data.length > 0) {
         const { lat, lon } = data[0];
-
         setRegion({
           latitude: parseFloat(lat),
           longitude: parseFloat(lon),
@@ -183,6 +175,19 @@ const Maps = () => {
       Alert.alert("Error", "Failed to search location.");
       console.error(error);
     }
+  };
+
+  const toggleMenu = () => {
+    setShowMenu((prev) => !prev);
+  };
+
+  const selectMapType = (type: "standard" | "satellite" | "hybrid") => {
+    setMapType(type);
+    setShowMenu(false);
+  };
+
+  const closeAirQualityCard = () => {
+    setSelectedMarker(null);
   };
 
   return (
@@ -240,10 +245,7 @@ const Maps = () => {
               title={marker.title}
               description={marker.description}
               onPress={() => {
-                if (
-                  marker &&
-                  marker.pm25 !== undefined 
-                ) {
+                if (marker && marker.pm25 !== undefined) {
                   setSelectedMarker(marker);
                 } else {
                   console.error("Invalid marker data:", marker);
