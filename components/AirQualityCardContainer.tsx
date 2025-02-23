@@ -11,6 +11,7 @@ const AirQualityCardContainer = ({ selectedMarker, setSelectedMarker }) => {
         
         pm25={selectedMarker?.pm25 ?? 0}
         temperature={selectedMarker?.temperature ?? 0}
+        pres={selectedMarker?.pres ?? 0}
         humidity={selectedMarker?.humidity ?? 0}
         location={selectedMarker?.title ?? "Unknown"}
       />

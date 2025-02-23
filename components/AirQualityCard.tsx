@@ -10,7 +10,7 @@ const getAQIColor = (pm25) => {
   return "#A87383"; // Hazardous (Maroon)
 };
 
-const AirQualityCard = ({ pm25, temperature, humidity, location }) => {
+const AirQualityCard = ({ pm25, pres,temperature, humidity, location }) => {
   return (
     <View style={styles.card}>
       <View style={[styles.aqiContainer, { backgroundColor: getAQIColor(pm25) }]}>
@@ -22,6 +22,7 @@ const AirQualityCard = ({ pm25, temperature, humidity, location }) => {
         <Text style={styles.details}>Location: {location}</Text>
         <View style={styles.statsContainer}>
           <Text style={styles.stats}>Temp: {temperature}°C</Text>
+          <Text style={styles.stats}>Pressure: {pres}Psi</Text>
           <Text style={styles.stats}>Humidity: {humidity}%</Text>
         </View>
       </View>
