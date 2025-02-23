@@ -188,7 +188,7 @@ const StationScreen = () => {
         <DataCard
           title="Pressure"
           value={station.pres}
-          unit="hPa"
+          unit="Psi"
           icon={<MaterialCommunityIcons name="gauge" size={24} color="#666" />}
         />
       </View>
@@ -197,7 +197,7 @@ const StationScreen = () => {
       <View style={styles.footer}>
         <Feather name="refresh-cw" size={16} color="#666" />
         <Text style={styles.updatedText}>
-          Last updated: {station.date} {station.time}
+          Last updated: {station.date}  {station.time}
         </Text>
       </View>
     </ScrollView>
