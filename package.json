@@ -1,6 +1,7 @@
 {
   "name": "yakkaw-mobile-application",
   "main": "expo-router/entry",
+  "packageManager": "bun@1.2.3",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
