@@ -45,10 +45,10 @@ git clone https://github.com/franz1us/Yakkaw-Mobile-Application.git
 cd Yakkaw-Mobile-Application
 
 # Install dependencies
-npm install  # or yarn install
+bun install  # or yarn install
 
 # Run the app
- npm start --reset-cache  # or react-native run-android
+ bun start --reset-cache  # or react-native run-android
 ```
 
 ---
