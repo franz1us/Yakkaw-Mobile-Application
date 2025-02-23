@@ -28,6 +28,9 @@ expo-env.d.ts
 # Metro
 .metro-health-check*
 
+# Bun
+bun.lockb
+
 # debug
 npm-debug.*
 yarn-debug.*
