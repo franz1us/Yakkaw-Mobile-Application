@@ -1,22 +1,7 @@
-// This file is a fallback for using MaterialIcons on Android and web.
-
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight } from 'expo-symbols';
+// IconSymbol.tsx
 import React from 'react';
-import { OpaqueColorValue, StyleProp, ViewStyle } from 'react-native';
-
-// Add your SFSymbol to MaterialIcons mappings here.
-const MAPPING = {
-  'home': 'home',
-  'mapping': 'room',
-  'ranking': 'format-list-bulleted',
-  'statistic': 'bar-chart',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-} as const;
-
-
-
+import { StyleProp, ViewStyle } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export type IconSymbolName =
   | 'home'
@@ -26,18 +11,29 @@ export type IconSymbolName =
   | 'chevron.left.forwardslash.chevron.right'
   | 'chevron.right';
 
-  export function IconSymbol({
-    name,
-    size = 24,
-    color,
-    style,
-  }: {
-    name: IconSymbolName; // Ensure it's explicitly typed
-    size?: number;
-    color: string | OpaqueColorValue;
-    style?: StyleProp<ViewStyle>;
-    weight?: SymbolWeight;
-  }) {
-    return <MaterialIcons color={color} size={size} name={MAPPING[name]} />;
-  }
-  
+const MaterialMapping = {
+  'home': 'house',
+  'mapping': 'room',
+  'ranking': 'format-list-bulleted',
+  'statistic': 'bar-chart',
+  'chevron.left.forwardslash.chevron.right': 'code',
+  'chevron.right': 'chevron-right',
+};
+
+type IconSymbolProps = {
+  name: IconSymbolName;
+  size?: number;
+  color: string;
+  style?: StyleProp<ViewStyle>;
+};
+
+export function IconSymbol({ name, size = 24, color, style }: IconSymbolProps) {
+  return (
+    <MaterialIcons
+      color={color}
+      size={size}
+      name={MaterialMapping[name]}
+      style={style}
+    />
+  );
+}

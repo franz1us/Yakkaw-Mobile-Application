@@ -1,32 +1,39 @@
-import { SymbolView, SymbolViewProps, SymbolWeight } from 'expo-symbols';
+// IconSymbol.tsx
+import React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export function IconSymbol({
-  name,
-  size = 24,
-  color,
-  style,
-  weight = 'regular',
-}: {
-  name: SymbolViewProps['name'];
+export type IconSymbolName =
+  | 'home'
+  | 'mapping'
+  | 'ranking'
+  | 'statistic'
+  | 'chevron.left.forwardslash.chevron.right'
+  | 'chevron.right';
+
+const MaterialMapping = {
+  'home': 'house',
+  'mapping': 'map',
+  'ranking': 'format-list-bulleted',
+  'statistic': 'bar-chart',
+  'chevron.left.forwardslash.chevron.right': 'code',
+  'chevron.right': 'chevron-right',
+};
+
+type IconSymbolProps = {
+  name: IconSymbolName;
   size?: number;
   color: string;
   style?: StyleProp<ViewStyle>;
-  weight?: SymbolWeight;
-}) {
+};
+
+export function IconSymbol({ name, size = 24, color, style }: IconSymbolProps) {
   return (
-    <SymbolView
-      weight={weight}
-      tintColor={color}
-      resizeMode="scaleAspectFit"
-      name={name}
-      style={[
-        {
-          width: size,
-          height: size,
-        },
-        style,
-      ]}
+    <MaterialIcons
+      color={color}
+      size={size}
+      name={MaterialMapping[name]}
+      style={style}
     />
   );
 }
