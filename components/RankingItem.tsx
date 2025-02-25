@@ -1,23 +1,34 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Image, ToastAndroid, Alert } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Ranking_type } from "@/constants/Ranking_Data";
 import { router } from "expo-router";
-import { ConditionRankingStyles, Status, trendArrow,imageStatus} from "./ConditionForRanking";
+import { ConditionRankingStyles, Status, trendArrow, imageStatus } from "./ConditionForRanking";
+import { getFavorite, setFavorit } from "@/services/LocalStorageService";
 
 interface RankingItemProps {
   item: Ranking_type;
 }
 
 const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
-  const styleCondition =  ConditionRankingStyles(item.av6h);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const styleCondition = ConditionRankingStyles(item.av6h);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetchFavoriteStatus();
+  }, []);
+
+  const fetchFavoriteStatus = async () => {
+    const favStatus = await getFavorite(item.pid);
+    setIsFavorite(favStatus);
+  };
+
+  const toggleFavorite = async () => {
+    const newStatus = !isFavorite;
+    await setFavorit(item.pid, newStatus);
+    setIsFavorite(newStatus);
+  };
+
 
   return (
     <TouchableOpacity
@@ -33,9 +44,10 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
         <View style={styles.LeftContainer}>
           <View
             style={[
-              styles.Circle,{
-                borderColor:styleCondition.borderColor,
-                backgroundColor:styleCondition.backgroundColor
+              styles.Circle,
+              {
+                borderColor: styleCondition.borderColor,
+                backgroundColor: styleCondition.backgroundColor,
               },
             ]}
           >
@@ -43,7 +55,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               style={[
                 styles.Text_circle,
                 {
-                  color:styleCondition.textColor
+                  color: styleCondition.textColor,
                 },
               ]}
             >
@@ -53,7 +65,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               style={[
                 styles.big_textcircle,
                 {
-                  color:styleCondition.textColor
+                  color: styleCondition.textColor,
                 },
               ]}
             >
@@ -63,7 +75,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               style={[
                 styles.Text_circle,
                 {
-                  color:styleCondition.textColor
+                  color: styleCondition.textColor,
                 },
               ]}
             >
@@ -73,7 +85,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
               style={[
                 styles.Text_circle,
                 {
-                  color:styleCondition.textColor
+                  color: styleCondition.textColor,
                 },
               ]}
             >
@@ -83,13 +95,11 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
           <Text style={styles.status_text}>{Status(item.av6h)}</Text>
         </View>
 
-
-
         <View style={styles.CenterContainer}>
           <View>
             <Text style={styles.locationName}>{item.place}</Text>
             <Text style={styles.Avg_text2}>
-              {item.date}   {item.time}
+              {item.date} {item.time}
             </Text>
           </View>
           <Text style={styles.locationName}>Average</Text>
@@ -100,7 +110,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                 style={[
                   styles.Average_Item1,
                   {
-                    backgroundColor:styleCondition.backgroundColor
+                    backgroundColor: styleCondition.backgroundColor,
                   },
                 ]}
               >
@@ -108,7 +118,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                   style={[
                     styles.Avg_text1,
                     {
-                      color:styleCondition.textColor
+                      color: styleCondition.textColor,
                     },
                   ]}
                 >
@@ -124,7 +134,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                 style={[
                   styles.Average_Item1,
                   {
-                    backgroundColor:styleCondition.backgroundColor
+                    backgroundColor: styleCondition.backgroundColor,
                   },
                 ]}
               >
@@ -132,7 +142,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                   style={[
                     styles.Avg_text1,
                     {
-                      color:styleCondition.textColor
+                      color: styleCondition.textColor,
                     },
                   ]}
                 >
@@ -148,7 +158,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                 style={[
                   styles.Average_Item1,
                   {
-                    backgroundColor:styleCondition.backgroundColor
+                    backgroundColor: styleCondition.backgroundColor,
                   },
                 ]}
               >
@@ -156,7 +166,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
                   style={[
                     styles.Avg_text1,
                     {
-                      color:styleCondition.textColor
+                      color: styleCondition.textColor,
                     },
                   ]}
                 >
@@ -174,7 +184,7 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
           </View>
         </View>
 
-        <TouchableOpacity onPress={() => setIsFavorite(!isFavorite)} style={styles.favoriteIcon}>
+        <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteIcon}>
           <AntDesign
             name={isFavorite ? "heart" : "hearto"}
             size={28}
@@ -190,6 +200,9 @@ const RankingItem: React.FC<RankingItemProps> = ({ item }) => {
     </TouchableOpacity>
   );
 };
+
+
+
 
 const styles = StyleSheet.create({
   container: {
