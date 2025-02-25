@@ -48,7 +48,7 @@ cd Yakkaw-Mobile-Application
 bun install  # or yarn install
 
 # Run the app
- bun start --reset-cache  # or react-native run-android
+ bun start -cf  # or react-native run-android
 ```
 
 ---
