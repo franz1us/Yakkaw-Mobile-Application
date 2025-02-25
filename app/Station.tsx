@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -15,38 +15,53 @@ import {
   ConditionRankingStyles,
 } from "@/components/ConditionForRanking";
 import { DataCard } from "@/components/CardofStation";
-
+import { getFavorite, setFavorit } from "@/services/LocalStorageService";
 
 const StationScreen = () => {
   const params = useLocalSearchParams();
   const station = JSON.parse(params.Station);
-  const [isFavorite, setIsFavorite] = useState(false);
   const styleCondition = ConditionRankingStyles(station.pm25);
-
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+ 
+   useEffect(() => {
+     fetchFavoriteStatus();
+   }, []);
+ 
+   const fetchFavoriteStatus = async () => {
+     const favStatus = await getFavorite(station.pid);
+     setIsFavorite(favStatus);
+   };
+ 
+   const toggleFavorite = async () => {
+     const newStatus = !isFavorite;
+     await setFavorit(station.pid, newStatus);
+     setIsFavorite(newStatus);
+   };
+ 
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
         <View>
-<View style={styles.titleContainer}>
-  <Text style={styles.title}>{station.place}</Text>
-  <View style={styles.iconContainer}>
-    <Text style={styles.trendIcon}>{trendArrowStation(station.trend)}</Text>
-  </View>
-</View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{station.place}</Text>
+            <View style={styles.iconContainer}>
+              <Text style={styles.trendIcon}>{trendArrowStation(station.trend)}</Text>
+            </View>
+          </View>
 
-    <View style={styles.locationContainer}>
-      <Feather name="map-pin" size={16} color="#666" />
-      <Text style={styles.locationText}>{station.address}</Text>
-    </View>
-  </View>
-        <TouchableOpacity onPress={() => setIsFavorite(!isFavorite)}>
-          <AntDesign
-            name={isFavorite ? "heart" : "hearto"}
-            size={28}
-            color={isFavorite ? "#FF2C2C" : "#555"}
-          />
-        </TouchableOpacity>
+          <View style={styles.locationContainer}>
+            <Feather name="map-pin" size={16} color="#666" />
+            <Text style={styles.locationText}>{station.address}</Text>
+          </View>
+        </View>
+         <TouchableOpacity onPress={toggleFavorite}>
+                  <AntDesign
+                    name={isFavorite ? "heart" : "hearto"}
+                    size={28}
+                    color={isFavorite ? "#FF2C2C" : "#555"}
+                  />
+                </TouchableOpacity>
       </View>
 
       {/* Main PM2.5 Status */}
@@ -105,25 +120,19 @@ const StationScreen = () => {
           title="PM10"
           value={station.pm10}
           unit=" µg/m³"
-          icon={
-            <MaterialCommunityIcons name="molecule" size={24} color="#666" />
-          }
+          icon={<MaterialCommunityIcons name="molecule" size={24} color="#666" />}
         />
         <DataCard
           title="PM2.5"
           value={station.pm25}
           unit=" µg/m³"
-          icon={
-            <MaterialCommunityIcons name="molecule" size={24} color="#666" />
-          }
+          icon={<MaterialCommunityIcons name="molecule" size={24} color="#666" />}
         />
         <DataCard
           title="PM100"
           value={station.pm100}
           unit=" µg/m³"
-          icon={
-            <MaterialCommunityIcons name="molecule" size={24} color="#666" />
-          }
+          icon={<MaterialCommunityIcons name="molecule" size={24} color="#666" />}
         />
       </View>
 
@@ -169,21 +178,13 @@ const StationScreen = () => {
           title="Temperature"
           value={station.temperature}
           unit="°C"
-          icon={
-            <MaterialCommunityIcons name="thermometer" size={24} color="#666" />
-          }
+          icon={<MaterialCommunityIcons name="thermometer" size={24} color="#666" />}
         />
         <DataCard
           title="Humidity"
           value={station.humidity}
           unit="%"
-          icon={
-            <MaterialCommunityIcons
-              name="water-percent"
-              size={24}
-              color="#666"
-            />
-          }
+          icon={<MaterialCommunityIcons name="water-percent" size={24} color="#666" />}
         />
         <DataCard
           title="Pressure"
@@ -203,7 +204,6 @@ const StationScreen = () => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
