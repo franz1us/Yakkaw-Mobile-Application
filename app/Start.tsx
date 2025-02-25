@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F9FAFB",
     padding: 16,
-    top: 30,
   },
   loadingText: {
     textAlign: "center",
@@ -82,6 +81,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 24,
+    left: 20,
+    top: 30,
   },
   icon: {
     width: 100,
@@ -107,6 +108,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     marginBottom: 24,
+    top: 20,
   },
   middleTitle: {
     fontSize: 22,
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 8,
     borderRadius: 8,
+    top: 30,
   },
   locationName: {
     fontSize: 16,
