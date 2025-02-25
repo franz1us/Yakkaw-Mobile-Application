@@ -9,97 +9,90 @@ const useRanking = () => {
   const [filteredData, setFilteredData] = useState<Ranking_type[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(API_URL);
-        // console.log("API Response:", response.data);
 
-        if (response.status === 200 && response.data.response) {
-          const today = format(new Date(), "yyyy-MM-dd");
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(API_URL);
 
-          const filteredResults = response.data.response
-            .filter((item: any) => {
-              const itemDate = item.ddate ? item.ddate : null;
-              return (
-                item.status === "Active" &&
-                item.latitude &&
-                item.longitude &&
-                item.ddate !== null &&
-                item.dtime !== null &&
-                item.timestamp !== null &&
-                item.av24h !== null &&
-                item.av12h !== null &&
-                item.av6h !== null &&
-                item.av3h !== null &&
-                item.av1h !== null &&
-                item.pm25 !== null &&
-                item.pm10 !== null &&
-                item.pm100 !== null &&
-                item.aqi !== null &&
-                item.temperature !== null &&
-                item.humidity !== null &&
-                item.pres !== null &&
-                item.color !== null &&
-                item.trend !== null &&
-                itemDate === today // ตรวจสอบว่าเป็นวันที่เดียวกับวันนี้
+      if (response.status === 200 && response.data.response) {
+        const today = format(new Date(), "yyyy-MM-dd");
 
-              );
-            })
-            .map((item: any) => ({
-              pid: item.dvid,
-              place: item.place || "Unknown",
-              address: item.address ||"Unknown",
-              av24h: item.av24h ?? 0,
-              av12h: item.av12h ?? 0,
-              av6h: item.pm25 ?? 0,
-              av3h: item.pm25 ?? 0,
-              av1h: item.pm25 ?? 0,
-              pm25: item.pm25 ?? 0,
-              pm10: item.pm10 ?? 0,
-              pm100: item.pm100 ?? 0,
-              pres: item.pres ?? 0,
-              humidity: item.humidity ?? 0,
-              aqi: item.aqi ?? 0,
-              latitude: item.latitude ?? 0,
-              longitude: item.longitude ?? 0,
-              temperature: item.temperature ?? "N/A",
-              trend: item.trend || "No Trend",
-              date: item.ddate,
-              time: format(new Date(`${item.ddate} ${item.dtime}`), "hh:mm a"),
-            }));
-
-            const uniqueFilteredResults: Ranking_type[] = Array.from(
-              new Map<string, Ranking_type>(filteredResults.map((item: { pid: any; }) => [item.pid, item])).values()
+        const filteredResults = response.data.response
+          .filter((item: any) => {
+            const itemDate = item.ddate ? item.ddate : null;
+            return (
+              item.status === "Active" &&
+              item.latitude &&
+              item.longitude &&
+              item.ddate !== null &&
+              item.dtime !== null &&
+              item.timestamp !== null &&
+              item.av24h !== null &&
+              item.av12h !== null &&
+              item.av6h !== null &&
+              item.av3h !== null &&
+              item.av1h !== null &&
+              item.pm25 !== null &&
+              item.pm10 !== null &&
+              item.pm100 !== null &&
+              item.aqi !== null &&
+              item.temperature !== null &&
+              item.humidity !== null &&
+              item.pres !== null &&
+              item.color !== null &&
+              item.trend !== null &&
+              itemDate === today
             );
-            
-            // 🔍 Debugging: Check for duplicate pids
-            const duplicatePids = filteredResults
-              .map((item: { pid: any; }) => item.pid)
-              .filter((pid: any, index: any, array: string | any[]) => array.indexOf(pid) !== index);
-  
-            if (duplicatePids.length > 0) {
-              console.warn("Duplicate pids detected:", duplicatePids);
-            }
-  
-            setFilteredData(uniqueFilteredResults.sort((a, b) => b.pm25 - a.pm25));
-          } else {
-            setError("Failed to fetch data.");
-          }
-        } catch (err) {
-          console.error("Error fetching data:", err);
-          setError("Unable to connect to the server.");
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchData();
-    }, []);
-  
-    return { filteredData, loading, error };
-  };
-  
-  export default useRanking;
+          })
+          .map((item: any) => ({
+            pid: item.dvid,
+            place: item.place || "Unknown",
+            address: item.address || "Unknown",
+            av24h: item.av24h ?? 0,
+            av12h: item.av12h ?? 0,
+            av6h: item.av6h ?? 0,
+            av3h: item.av3h ?? 0,
+            av1h: item.av1h ?? 0,
+            pm25: item.pm25 ?? 0,
+            pm10: item.pm10 ?? 0,
+            pm100: item.pm100 ?? 0,
+            pres: item.pres ?? 0,
+            humidity: item.humidity ?? 0,
+            aqi: item.aqi ?? 0,
+            latitude: item.latitude ?? 0,
+            longitude: item.longitude ?? 0,
+            temperature: item.temperature ?? "N/A",
+            trend: item.trend || "No Trend",
+            date: item.ddate,
+            time: format(new Date(`${item.ddate} ${item.dtime}`), "hh:mm a"),
+          }));
 
+        const uniqueFilteredResults: Ranking_type[] = Array.from(
+          new Map<string, Ranking_type>(
+            filteredResults.map((item: { pid: any }) => [item.pid, item])
+          ).values()
+        );
+
+        setFilteredData(uniqueFilteredResults.sort((a, b) => b.pm25 - a.pm25));
+      } else {
+        setError("Failed to fetch data.");
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("Unable to connect to the server.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // เรียก fetchData ครั้งแรก
+    const intervalId = setInterval(fetchData, 30000); // ดึงข้อมูลทุก 30 วินาที
+
+    return () => clearInterval(intervalId); // เคลียร์ interval เมื่อ component unmount
+  }, []);
+
+  return { filteredData, loading, error };
+};
+
+export default useRanking;
