@@ -8,8 +8,10 @@ import {
   FlatList,
 } from "react-native";
 import { router } from "expo-router";
+import { setLocation } from "@/services/LocalStorageService";
 import useRanking from "@/hooks/useRanking";
-const route = router
+
+const route = router;
 
 const Start: React.FC = () => {
   const { filteredData, loading, error } = useRanking();
@@ -25,8 +27,35 @@ const Start: React.FC = () => {
   const renderItem = ({ item }: { item: { pid: string; place: string } }) => (
     <TouchableOpacity
       style={styles.locationItem}
-      onPress={() => route.push(`/back/Home`)}
-      // onPress={() => route.push(`/location/${item.id}`)}
+      onPress={async () => {
+        // Save only the place to local storage
+        await setLocation({
+          place: item.place,
+          favorite: false,
+          temperature: 0,
+          trend: "",
+          time: "",
+          date: "",
+          address: "",
+          pm25: 0,
+          pm10: 0,
+          pm100: 0,
+          av24h: 0,
+          av12h: 0,
+          av6h: 0,
+          av3h: 0,
+          av1h: 0,
+          humidity: 0,
+          pres: 0,
+          aqi: 0,
+          pid: "",
+          latitude: 0,
+          longitude: 0
+        });
+        console.log(`Location ID: ${item.pid} Place:${item.place}`)
+        route.push(`/back/Home`);
+        //route.push(`/back/Home?location=${item.place}`);
+      }}
     >
       <Text style={styles.locationName}>{item.place}</Text>
     </TouchableOpacity>
